@@ -109,3 +109,19 @@ def load_custom_css():
         }
         </style>
     """, unsafe_allow_html=True)
+def load_custom_css():
+    st.markdown("""
+        <style>
+        /* ... existing styles ... */
+        
+        /* Watermark Logo styling */
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1F2937;
+        }
+        </style>
+    """, unsafe_allow_html=True)
