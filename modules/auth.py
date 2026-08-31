@@ -16,6 +16,10 @@ class RBACManager:
         """Verifies if a specific role has permission to execute a feature."""
         return permission in RBACManager.PERMISSIONS.get(role, [])
 
+def check_permission(role: str, permission: str) -> bool:
+    """Standalone top-level helper wrapper for permission checking."""
+    return RBACManager.check_permission(role, permission)
+
 def init_session_state():
     """Initializes standard user authentication and session states."""
     if "authenticated" not in st.session_state:
