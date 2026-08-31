@@ -1,12 +1,8 @@
 import os
 from langchain_groq import ChatGroq
-from langchain_community.agent_toolkits import create_sql_agent
-from langchain.agents import AgentType
 from langchain.sql_database import SQLDatabase
-from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain.tools import Tool
 
 class PragyanAgenticEngine:
     def __init__(self, db_path="sqlite:///pragyan_ai.db", persist_dir="./vector_store/policies_db"):
@@ -18,7 +14,10 @@ class PragyanAgenticEngine:
         )
         
         # 1. Structured SQL Database connection
-        self.sql_db = SQLDatabase.from_uri(db_path)
+        try:
+            self.sql_db = SQLDatabase.from_uri(db_path)
+        except Exception:
+            self.sql_db = None
         
         # 2. Vector DB RAG for institutional policies
         self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
@@ -36,26 +35,26 @@ class PragyanAgenticEngine:
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 2})
 
     def get_agent_executor(self):
-        """Builds agent binding SQL operational tools and vector document search RAG."""
-        sql_toolkit = SQLDatabaseToolkit(db=self.sql_db, llm=self.llm)
-        
-        def query_policy_kb(query: str) -> str:
-            """Searches institutional rulebooks, bylaws, and exam eligibility guidelines."""
-            docs = self.retriever.invoke(query)
-            return "\n".join([d.page_content for d in docs])
+        """Returns a lightweight executor wrapper that queries context and LLM directly."""
+        class DirectAgentExecutor:
+            def __init__(self, llm, retriever, sql_db):
+                self.llm = llm
+                self.retriever = retriever
+                self.sql_db = sql_db
 
-        rag_tool = Tool(
-            name="institutional_policy_search",
-            func=query_policy_kb,
-            description="Use for university attendance rules, detention policies, medical exemptions, or grading bylaws."
-        )
-        
-        agent_executor = create_sql_agent(
-            llm=self.llm,
-            toolkit=sql_toolkit,
-            extra_tools=[rag_tool],
-            agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-            verbose=True,
-            handle_parsing_errors=True
-        )
-        return agent_executor
+            def run(self, query_text: str) -> str:
+                # Retrieve relevant policy docs
+                docs = self.retriever.invoke(query_text)
+                policy_context = "\n".join([d.page_content for d in docs])
+                
+                prompt = (
+                    f"You are PragyanAI, an intelligent university assistant. "
+                    f"Answer the user query accurately using institutional guidelines and data context.\n\n"
+                    f"Relevant Institutional Policies:\n{policy_context}\n\n"
+                    f"User Query: {query_text}\n\n"
+                    f"Provide a helpful, professional response:"
+                )
+                response = self.llm.invoke(prompt)
+                return response.content
+
+        return DirectAgentExecutor(self.llm, self.retriever, self.sql_db)
