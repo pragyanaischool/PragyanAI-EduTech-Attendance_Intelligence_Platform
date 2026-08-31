@@ -1,6 +1,7 @@
 import os
 from langchain_groq import ChatGroq
-from langchain.agents import create_sql_agent, AgentType
+from langchain_community.agent_toolkits import create_sql_agent
+from langchain.agents import AgentType
 from langchain.sql_database import SQLDatabase
 from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
 from langchain_chroma import Chroma
@@ -37,7 +38,6 @@ class PragyanAgenticEngine:
     def get_agent_executor(self):
         """Builds agent binding SQL operational tools and vector document search RAG."""
         sql_toolkit = SQLDatabaseToolkit(db=self.sql_db, llm=self.llm)
-        sql_tools = sql_toolkit.get_tools()
         
         def query_policy_kb(query: str) -> str:
             """Searches institutional rulebooks, bylaws, and exam eligibility guidelines."""
@@ -52,7 +52,7 @@ class PragyanAgenticEngine:
         
         agent_executor = create_sql_agent(
             llm=self.llm,
-            db=self.sql_db,
+            toolkit=sql_toolkit,
             extra_tools=[rag_tool],
             agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
             verbose=True,
