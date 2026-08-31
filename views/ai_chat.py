@@ -1,14 +1,15 @@
 import streamlit as st
 import os
+from utils.helpers import render_brand_logo
 from modules.hybrid_agent_engine import PragyanAgenticEngine
 
 def render_ai_chat_view():
     """
-    Renders the dedicated conversational AI chatbot interface with brand watermark,
+    Renders the dedicated conversational AI chatbot interface with safe brand watermark logo,
     session message persistence, and autonomous SQL + Vector DB RAG routing.
     """
-    # 1. Brand Watermark Logo Integration
-    st.image("PragyanAI_Transparent.png", width=220)
+    # 1. Safe Brand Watermark Logo Integration
+    render_brand_logo(width=220, is_sidebar=False)
     
     user_role = st.session_state.get("role", "Student")
     user_name = st.session_state.get("user_name", "User")
