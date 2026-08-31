@@ -6,6 +6,7 @@ def render_faculty_dashboard():
     Renders the dedicated faculty control center with live session QR generation,
     session timers, and real-time student attendance monitoring streams.
     """
+    st.image("PragyanAI_Transparent.png", width=220)
     user_name = st.session_state.get("user_name", "Dr. Faculty 1 (Comp)")
     
     st.markdown(f"# 👨‍🏫 Faculty Control Center — {user_name}")
