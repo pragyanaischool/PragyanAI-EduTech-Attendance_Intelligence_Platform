@@ -8,6 +8,7 @@ def render_hod_dashboard():
     Renders the dedicated HOD Department Intelligence Hub with department-wide metrics,
     class comparisons, subject-wise lecture counts, and critical shortage identification.
     """
+    st.image("PragyanAI_Transparent.png", width=220)
     user_name = st.session_state.get("user_name", "Dr. HOD (ECE)")
     dept_name = "Electronics & Communication Engineering (ECE)"
     
