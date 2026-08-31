@@ -7,8 +7,8 @@ def render_admin_dashboard():
     department rosters, faculty databases, student directories, and RBAC user provisioning.
     """
     user_name = st.session_state.get("user_name", "System Admin")
-    
-    st.markdown(f"# ⚙️ Admin System & Large-Scale Data Hub — {user_name}")
+    st.image("PragyanAI_Transparent.png", width=220)
+    st.markdown(f"# Admin System & Large-Scale Data Hub — {user_name}")
     st.markdown("### *Institute Setup, RBAC User Provisioning, and Database Audits*")
 
     # Ensure mock data is initialized from sample_data module
