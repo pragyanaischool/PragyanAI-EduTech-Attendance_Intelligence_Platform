@@ -1,12 +1,13 @@
 import streamlit as st
+from utils.helpers import render_brand_logo
 
 def render_profile_view():
     """
-    Renders the personal profile management settings view with brand watermark logo
+    Renders the personal profile management settings view with safe brand watermark logo
     and editable user fields.
     """
-    # 1. Brand Watermark Logo Integration
-    st.image("PragyanAI_Transparent.png", width=220)
+    # 1. Safe Brand Watermark Logo Integration
+    render_brand_logo(width=220, is_sidebar=False)
     
     user_name = st.session_state.get("user_name", "User")
     user_role = st.session_state.get("role", "Student")
