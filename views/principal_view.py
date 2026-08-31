@@ -8,6 +8,7 @@ def render_principal_dashboard():
     Renders the Principal Institute-Wide Analytics Hub with cross-department comparisons,
     semester-wise performance trends, and institute-level shortage audits.
     """
+    st.image("PragyanAI_Transparent.png", width=220)
     user_name = st.session_state.get("user_name", "Dr. Principal")
     
     st.markdown("# 🏢 Principal Institute-Wide Analytics Hub")
