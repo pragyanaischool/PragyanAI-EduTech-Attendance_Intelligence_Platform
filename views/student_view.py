@@ -6,6 +6,7 @@ def render_student_dashboard():
     Renders the dedicated student portal view with metrics, subject-wise passport,
     trajectory trends, and shortage calculation intelligence.
     """
+    st.image("PragyanAI_Transparent.png", width=220)
     user_name = st.session_state.get("user_name", "Sateesh Ambesange")
     
     st.markdown(f"# 🎒 Student Attendance Passport — {user_name}")
