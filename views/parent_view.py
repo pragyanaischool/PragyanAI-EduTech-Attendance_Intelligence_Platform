@@ -5,6 +5,7 @@ def render_parent_dashboard():
     Renders the dedicated Parent Portal view for monitoring ward attendance,
     receiving shortage advisories, and auditing weekly performance records.
     """
+    st.image("PragyanAI_Transparent.png", width=220)
     parent_name = st.session_state.get("user_name", "Mr. Ambesange")
     ward_name = "Sateesh Ambesange"
     
