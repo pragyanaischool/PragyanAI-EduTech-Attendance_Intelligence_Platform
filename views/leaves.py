@@ -1,13 +1,14 @@
 import streamlit as st
 import datetime
+from utils.helpers import render_brand_logo
 
 def render_leave_portal():
     """
-    Renders the dedicated Leave Application & Approval Portal with brand watermark logo,
+    Renders the dedicated Leave Application & Approval Portal with safe brand watermark logo,
     submission forms, and multi-tier approval workflows supporting Student, Faculty, and Parent roles.
     """
-    # 1. Brand Watermark Logo Integration
-    st.image("PragyanAI_Transparent.png", width=220)
+    # 1. Safe Brand Watermark Logo Integration
+    render_brand_logo(width=220, is_sidebar=False)
     
     user_name = st.session_state.get("user_name", "Sateesh Ambesange")
     user_role = st.session_state.get("role", "Student")
