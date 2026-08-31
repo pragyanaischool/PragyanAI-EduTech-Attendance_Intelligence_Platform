@@ -1,5 +1,6 @@
 import streamlit as st
 from utils.styles import load_custom_css
+from utils.helpers import render_brand_logo
 from modules.sample_data import SampleDataGenerator
 from modules.auth import init_session_state
 from views.student_view import render_student_dashboard
@@ -35,8 +36,8 @@ def login_sidebar():
     Renders the brand logo and secure login sidebar for authenticating 
     across all 6 institutional roles.
     """
-    # Render Transparent Brand Logo at Top of Sidebar
-    st.sidebar.image("PragyanAI_Transparent.png", width=180)
+    # Render Brand Logo safely at Top of Sidebar
+    render_brand_logo(width=180, is_sidebar=True)
     
     st.sidebar.markdown("### *Attendance Intelligence*")
     st.sidebar.markdown("---")
@@ -69,11 +70,7 @@ def main():
     """
     if not st.session_state.authenticated:
         # Welcome Hero Page if unauthenticated
-        # Safe image rendering snippet
-        try:
-            st.image("PragyanAI_Transparent.png", width=300)
-        except Exception:
-            st.markdown("### 🎓 PragyanAI Attendance Intelligence")
+        render_brand_logo(width=280, is_sidebar=False)
         st.markdown("# 🎓 PragyanAI Attendance Intelligence Platform")
         st.markdown("### *From Attendance Capture to Academic Intelligence. Capture. Analyse. Predict. Improve.*")
         st.markdown("---")
@@ -81,8 +78,8 @@ def main():
         login_sidebar()
         return
 
-    # Render Brand Logo at Top of Authenticated Sidebar
-    st.sidebar.image("PragyanAI_Transparent.png", width=160)
+    # Render Brand Logo safely at Top of Authenticated Sidebar
+    render_brand_logo(width=160, is_sidebar=True)
     st.sidebar.title(f"Portal: {st.session_state.role}")
     st.sidebar.markdown(f"**User:** {st.session_state.user_name}")
     st.sidebar.markdown("---")
