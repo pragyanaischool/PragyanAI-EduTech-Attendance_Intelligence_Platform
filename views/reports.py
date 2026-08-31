@@ -1,13 +1,14 @@
 import streamlit as st
+from utils.helpers import render_brand_logo
 from modules.report_generator import PDFReportGenerator
 
 def render_reports_view():
     """
-    Renders the dedicated One-Click Institutional PDF Reports Center with brand watermark logo,
+    Renders the dedicated One-Click Institutional PDF Reports Center with safe brand watermark logo,
     scope selection, and ReportLab PDF compilation and download handlers.
     """
-    # 1. Brand Watermark Logo Integration
-    st.image("PragyanAI_Transparent.png", width=220)
+    # 1. Safe Brand Watermark Logo Integration
+    render_brand_logo(width=220, is_sidebar=False)
     
     user_name = st.session_state.get("user_name", "User")
     user_role = st.session_state.get("role", "Admin")
