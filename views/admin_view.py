@@ -7,7 +7,11 @@ def render_admin_dashboard():
     department rosters, faculty databases, student directories, and RBAC user provisioning.
     """
     user_name = st.session_state.get("user_name", "System Admin")
-    st.image("PragyanAI_Transparent.png", width=220)
+    # Safe image rendering snippet
+    try:
+        st.image("PragyanAI_Transparent.png", width=300)
+    except Exception:
+        st.markdown("### 🎓 PragyanAI Attendance Intelligence")
     st.markdown(f"# Admin System & Large-Scale Data Hub — {user_name}")
     st.markdown("### *Institute Setup, RBAC User Provisioning, and Database Audits*")
 
