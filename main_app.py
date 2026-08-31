@@ -69,7 +69,11 @@ def main():
     """
     if not st.session_state.authenticated:
         # Welcome Hero Page if unauthenticated
-        st.image("PragyanAI_Transparent.png", width=300)
+        # Safe image rendering snippet
+        try:
+            st.image("PragyanAI_Transparent.png", width=300)
+        except Exception:
+            st.markdown("### 🎓 PragyanAI Attendance Intelligence")
         st.markdown("# 🎓 PragyanAI Attendance Intelligence Platform")
         st.markdown("### *From Attendance Capture to Academic Intelligence. Capture. Analyse. Predict. Improve.*")
         st.markdown("---")
