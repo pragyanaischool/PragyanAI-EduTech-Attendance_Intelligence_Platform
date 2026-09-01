@@ -1,0 +1,24 @@
+{
+  "institutional_metadata": {
+    "institution": "PragyanAI University & Research Studio",
+    "academic_term": "Fall Semester 2026",
+    "last_updated": "2026-09-01"
+  },
+  "principal_profile": {
+    "employee_id": "EXEC_PRINCIPAL_2026_01",
+    "principal_name": "Dr. Principal",
+    "title": "Principal & Chief Academic Officer",
+    "institution_name": "PragyanAI University & Research Studio",
+    "email": "principal@pragyan.edu",
+    "contact_phone": "+91 98765 99999",
+    "office_location": "Main Block, Suite 101 (Central Administration)",
+    "council_hours": "Mon, Wed, Fri: 11:00 AM - 2:00 PM",
+    "availability_status": "🟢 Available in Executive Suite",
+    "institute_macro_metrics": {
+      "total_institute_students": 2450,
+      "total_faculty_members": 112,
+      "institute_average_turnout": "88.6%",
+      "total_shortage_cohort": 142
+    }
+  }
+}
