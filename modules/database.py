@@ -3,7 +3,7 @@ import streamlit as st
 class PragyanDatabase:
     """
     Core Database & Session State Management for PragyanAI Institutional Platform.
-    Handles persistent storage for students with multi-subject attendance tracking, 
+    Handles persistent storage for students with comprehensive multi-subject attendance tracking, 
     faculty portfolios, department rosters, semester course allocations, leave records, and adhoc duties.
     """
 
@@ -13,9 +13,10 @@ class PragyanDatabase:
         if "db_initialized" in st.session_state and st.session_state.db_initialized:
             return
 
-        # 1. Students Database (Enhanced with Multi-Subject Tracking & Standardized Semesters)
+        # 1. Expanded Students Database with Multi-Subject Tracking Across Semesters 3, 5, and 7
         if "students_db" not in st.session_state:
             st.session_state.students_db = [
+                # --- SEMESTER 5 STUDENTS ---
                 {
                     "roll": "ECE_2026_042", 
                     "name": "Sateesh Ambesange", 
@@ -59,6 +60,36 @@ class PragyanDatabase:
                     }
                 },
                 {
+                    "roll": "ECE_2026_055", 
+                    "name": "Kiran Kumar", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 5", 
+                    "attendance_percentage": 94.0, 
+                    "exam_eligibility_status": "🟢 Safe",
+                    "subjects": {
+                        "ECE501 - VLSI Architecture": {"held": 38, "attended": 36, "pct": 94.7, "status": "🟢 Safe"},
+                        "ECE502 - Microcontrollers": {"held": 40, "attended": 38, "pct": 95.0, "status": "🟢 Safe"},
+                        "ECE503 - Digital Signal Processing": {"held": 35, "attended": 33, "pct": 94.2, "status": "🟢 Safe"},
+                        "ECE504 - Control Systems": {"held": 32, "attended": 30, "pct": 93.7, "status": "🟢 Safe"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_071", 
+                    "name": "Neha Gupta", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 5", 
+                    "attendance_percentage": 69.5, 
+                    "exam_eligibility_status": "🔴 Shortage Risk",
+                    "subjects": {
+                        "ECE501 - VLSI Architecture": {"held": 38, "attended": 26, "pct": 68.4, "status": "🔴 Shortage Risk"},
+                        "ECE502 - Microcontrollers": {"held": 40, "attended": 28, "pct": 70.0, "status": "🔴 Shortage Risk"},
+                        "ECE503 - Digital Signal Processing": {"held": 35, "attended": 24, "pct": 68.5, "status": "🔴 Shortage Risk"},
+                        "ECE504 - Control Systems": {"held": 32, "attended": 22, "pct": 68.7, "status": "🔴 Shortage Risk"}
+                    }
+                },
+
+                # --- SEMESTER 3 STUDENTS ---
+                {
                     "roll": "ECE_2026_102", 
                     "name": "Rohan Verma", 
                     "department": "Electronics & Communication (ECE)", 
@@ -73,6 +104,36 @@ class PragyanDatabase:
                     }
                 },
                 {
+                    "roll": "ECE_2026_108", 
+                    "name": "Divya Swaminathan", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 3", 
+                    "attendance_percentage": 92.1, 
+                    "exam_eligibility_status": "🟢 Safe",
+                    "subjects": {
+                        "ECE301 - Digital Logic Design": {"held": 36, "attended": 34, "pct": 94.4, "status": "🟢 Safe"},
+                        "ECE302 - Signals & Systems": {"held": 34, "attended": 31, "pct": 91.1, "status": "🟢 Safe"},
+                        "ECE303 - Network Theory": {"held": 32, "attended": 29, "pct": 90.6, "status": "🟢 Safe"},
+                        "ECE304 - Electronic Devices": {"held": 30, "attended": 28, "pct": 93.3, "status": "🟢 Safe"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_120", 
+                    "name": "Aditya Rao", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 3", 
+                    "attendance_percentage": 74.0, 
+                    "exam_eligibility_status": "🟡 At-Risk (<75%)",
+                    "subjects": {
+                        "ECE301 - Digital Logic Design": {"held": 36, "attended": 28, "pct": 77.7, "status": "🟡 Warning"},
+                        "ECE302 - Signals & Systems": {"held": 34, "attended": 25, "pct": 73.5, "status": "🔴 Shortage Risk"},
+                        "ECE303 - Network Theory": {"held": 32, "attended": 23, "pct": 71.8, "status": "🔴 Shortage Risk"},
+                        "ECE304 - Electronic Devices": {"held": 30, "attended": 24, "pct": 80.0, "status": "🟢 Safe"}
+                    }
+                },
+
+                # --- SEMESTER 7 STUDENTS ---
+                {
                     "roll": "ECE_2026_115", 
                     "name": "Ananya Iyer", 
                     "department": "Electronics & Communication (ECE)", 
@@ -83,6 +144,19 @@ class PragyanDatabase:
                         "ECE701 - Wireless Communications": {"held": 30, "attended": 21, "pct": 70.0, "status": "🔴 Shortage Risk"},
                         "ECE702 - AI in EDA": {"held": 28, "attended": 18, "pct": 64.2, "status": "🔴 Shortage Risk"},
                         "ECE703 - RF Circuit Design": {"held": 32, "attended": 23, "pct": 71.8, "status": "🔴 Shortage Risk"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_130", 
+                    "name": "Karthik Hegde", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 7", 
+                    "attendance_percentage": 89.5, 
+                    "exam_eligibility_status": "🟢 Safe",
+                    "subjects": {
+                        "ECE701 - Wireless Communications": {"held": 30, "attended": 27, "pct": 90.0, "status": "🟢 Safe"},
+                        "ECE702 - AI in EDA": {"held": 28, "attended": 25, "pct": 89.2, "status": "🟢 Safe"},
+                        "ECE703 - RF Circuit Design": {"held": 32, "attended": 28, "pct": 87.5, "status": "🟢 Safe"}
                     }
                 }
             ]
