@@ -1,130 +1,157 @@
 import streamlit as st
-from utils.styles import load_custom_css
 from utils.helpers import render_brand_logo
-from modules.sample_data import SampleDataGenerator
-from modules.auth import init_session_state
-from views.student_view import render_student_dashboard
-from views.faculty_view import render_faculty_dashboard
-from views.parent_view import render_parent_dashboard
-from views.hod_view import render_hod_dashboard
-from views.principal_view import render_principal_dashboard
-from views.admin_view import render_admin_dashboard
-from views.ai_chat import render_ai_chat_view
-from views.leaves import render_leave_portal
-from views.reports import render_reports_view
-from views.profile import render_profile_view
 
-# 1. Page Configuration
+# --- Import Student Views ---
+from views.student_dashboard import render_student_dashboard
+from views.student_profile import render_student_profile
+from views.student_chat import render_student_chat
+from views.student_leaves import render_student_leaves
+from views.student_reports import render_student_reports
+from views.student_analytics import render_student_analytics
+
+# --- Import Faculty Views ---
+from views.faculty_dashboard import render_faculty_dashboard
+from views.faculty_profile import render_faculty_profile
+from views.faculty_chat import render_faculty_chat
+from views.faculty_leaves import render_faculty_leaves
+from views.faculty_reports import render_faculty_reports
+from views.faculty_analytics import render_faculty_analytics
+
+# --- Import HOD Views ---
+from views.hod_dashboard import render_hod_dashboard
+from views.hod_profile import render_hod_profile
+from views.hod_chat import render_hod_chat
+from views.hod_leaves import render_hod_leaves
+from views.hod_reports import render_hod_reports
+from views.hod_analytics import render_hod_analytics
+
+# --- Import Principal Views ---
+from views.principal_dashboard import render_principal_dashboard
+from views.principal_profile import render_principal_profile
+from views.principal_chat import render_principal_chat
+from views.principal_leaves import render_principal_leaves
+from views.principal_reports import render_principal_reports
+from views.principal_analytics import render_principal_analytics
+
+# --- Import Parent Views ---
+from views.parent_dashboard import render_parent_dashboard
+from views.parent_profile import render_parent_profile
+from views.parent_chat import render_parent_chat
+from views.parent_analytics import render_parent_analytics
+
+# --- Streamlit Page Configuration ---
 st.set_page_config(
-    page_title="PragyanAI Attendance Intelligence",
+    page_title="PragyanAI Attendance Intelligence Platform",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2. Load Sleek Dark-Mode Custom CSS
-load_custom_css()
-
-# 3. Initialize Large-Scale Mock Dataset (6 Depts, 120 Faculty, 6k Students)
-SampleDataGenerator.initialize_institutional_data()
-
-# 4. Initialize Session State Variables
-init_session_state()
-
-def login_sidebar():
-    """
-    Renders the brand logo and secure login sidebar for authenticating 
-    across all 6 institutional roles.
-    """
-    # Render Brand Logo safely at Top of Sidebar
-    render_brand_logo(width=180, is_sidebar=True)
-    
-    st.sidebar.markdown("### *Attendance Intelligence*")
-    st.sidebar.markdown("---")
-    
-    st.sidebar.markdown("## 🔐 Secure Portal Login")
-    role = st.sidebar.selectbox("Select Access Role", ["Student", "Faculty", "Parent", "HOD", "Principal", "Admin"])
-    
-    name_map = {
-        "Student": "Sateesh Ambesange", 
-        "Faculty": "Dr. Faculty 1 (Comp)", 
-        "Parent": "Mr. Ambesange", 
-        "HOD": "Dr. HOD (ECE)", 
-        "Principal": "Dr. Principal", 
-        "Admin": "System Admin"
-    }
-    
-    user_name = st.sidebar.text_input("Full Name", value=name_map.get(role, "User"))
-    email = st.sidebar.text_input("Institutional Email", value="user@pragyan.edu")
-    password = st.sidebar.text_input("Password", type="password", value="••••••••")
-    
-    if st.sidebar.button("🚀 Authorize & Enter"):
-        st.session_state.authenticated = True
-        st.session_state.role = role
-        st.session_state.user_name = user_name
-        st.rerun()
-
 def main():
-    """
-    Main application router managing authentication states and modular view navigation.
-    """
-    if not st.session_state.authenticated:
-        # Welcome Hero Page if unauthenticated
-        render_brand_logo(width=280, is_sidebar=False)
-        st.markdown("# 🎓 PragyanAI Attendance Intelligence Platform")
-        st.markdown("### *From Attendance Capture to Academic Intelligence. Capture. Analyse. Predict. Improve.*")
-        st.markdown("---")
-        st.info("💡 **Getting Started:** Please select your portal role and enter credentials in the sidebar to access your tailored dashboard.")
-        login_sidebar()
-        return
+    # 1. Initialize Global Session State Defaults
+    if "role" not in st.session_state:
+        st.session_state.role = "Student"
+    if "user_name" not in st.session_state:
+        st.session_state.user_name = "Sateesh Ambesange"
+    if "institutional_notices" not in st.session_state:
+        st.session_state.institutional_notices = [
+            {
+                "id": 1, 
+                "title": "Mid-Semester Examination Attendance Mandate", 
+                "date": "2026-09-01", 
+                "author": "Dr. Principal (Executive Deanery)", 
+                "priority": "🔴 High", 
+                "content": "All students must maintain a strict 75% attendance record across all courses to qualify for upcoming mid-semester examinations starting later this month. Medical certificates must be submitted via the portal."
+            },
+            {
+                "id": 2, 
+                "title": "IEEE Technical Paper Presentation Symposium", 
+                "date": "2026-08-28", 
+                "author": "Dr. HOD (ECE)", 
+                "priority": "🟡 Medium", 
+                "content": "ECE department students are invited to register for the upcoming national robotics and AI symposium hosted in Block C auditorium."
+            }
+        ]
 
-    # Render Brand Logo safely at Top of Authenticated Sidebar
-    render_brand_logo(width=160, is_sidebar=True)
-    st.sidebar.title(f"Portal: {st.session_state.role}")
-    st.sidebar.markdown(f"**User:** {st.session_state.user_name}")
+    # 2. Sidebar Authentication & Role Switcher
+    render_brand_logo(width=180, is_sidebar=True)
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🔐 Role-Based Access Control")
+    
+    selected_role = st.sidebar.selectbox(
+        "Select User Role", 
+        ["Student", "Faculty", "HOD", "Principal", "Parent"],
+        index=["Student", "Faculty", "HOD", "Principal", "Parent"].index(st.session_state.role)
+    )
+    
+    # If role changes, reset default user name accordingly
+    if selected_role != st.session_state.role:
+        st.session_state.role = selected_role
+        default_names = {
+            "Student": "Sateesh Ambesange",
+            "Faculty": "Dr. Faculty (ECE)",
+            "HOD": "Dr. HOD (ECE)",
+            "Principal": "Dr. Principal",
+            "Parent": "Mr. Ambesange (Guardian)"
+        }
+        st.session_state.user_name = default_names.get(selected_role, "User")
+
+    # Editable Active User Name
+    user_name = st.sidebar.text_input("Active User Name", value=st.session_state.user_name)
+    st.session_state.user_name = user_name
+
     st.sidebar.markdown("---")
     
-    # Modular Multi-Page Navigation Hub
-    page = st.sidebar.radio("Navigation Hub", [
-        f"📊 {st.session_state.role} Dashboard", 
-        "🤖 AI Chatbot Assistant", 
-        "📝 Leave Applications & Approvals", 
-        "📄 PDF Reports Center", 
-        "👤 Personal Profile", 
-        "🚪 Logout"
-    ])
-
-    # Handle Logout Action
-    if page == "🚪 Logout":
-        st.session_state.authenticated = False
-        st.rerun()
-
-    # Dynamic User-Wise View Routing
-    dashboard_label = f"📊 {st.session_state.role} Dashboard"
+    # 3. Role-Specific Navigation Menus
+    role = st.session_state.role
     
-    if page == dashboard_label:
-        role = st.session_state.role
-        if role == "Student":
-            render_student_dashboard()
-        elif role == "Faculty":
-            render_faculty_dashboard()
-        elif role == "Parent":
-            render_parent_dashboard()
-        elif role == "HOD":
-            render_hod_dashboard()
-        elif role == "Principal":
-            render_principal_dashboard()
-        elif role == "Admin":
-            render_admin_dashboard()
-            
-    elif page == "🤖 AI Chatbot Assistant":
-        render_ai_chat_view()
-    elif page == "📝 Leave Applications & Approvals":
-        render_leave_portal()
-    elif page == "📄 PDF Reports Center":
-        render_reports_view()
-    elif page == "👤 Personal Profile":
-        render_profile_view()
+    if role == "Student":
+        page = st.sidebar.radio("Navigation", ["Dashboard", "AI Advisor", "Analytics", "Profile", "Leaves", "Reports"])
+    elif role == "Parent":
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
+    elif role in ["Faculty", "HOD", "Principal"]:
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Analytics", "Profile", "Leaves", "Reports"])
+    else:
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile"])
+
+    st.sidebar.markdown("---")
+    st.sidebar.info(f"🟢 Active Session\n\n**User:** {user_name}\n**Role:** {role}")
+
+    # 4. Central Routing Engine (Isolated View Dispatcher)
+    if role == "Student":
+        if page == "Dashboard": render_student_dashboard()
+        elif page == "AI Advisor": render_student_chat()
+        elif page == "Analytics": render_student_analytics()
+        elif page == "Profile": render_student_profile()
+        elif page == "Leaves": render_student_leaves()
+        elif page == "Reports": render_student_reports()
+        
+    elif role == "Parent":
+        if page == "Dashboard": render_parent_dashboard()
+        elif page == "Guardian AI Chat": render_parent_chat()
+        elif page == "Analytics": render_parent_analytics()
+        elif page == "Profile": render_parent_profile()
+        
+    elif role == "Faculty":
+        if page == "Dashboard": render_faculty_dashboard()
+        elif page == "Analytics": render_faculty_analytics()
+        elif page == "Profile": render_faculty_profile()
+        elif page == "Leaves": render_faculty_leaves()
+        elif page == "Reports": render_faculty_reports()
+        
+    elif role == "HOD":
+        if page == "Dashboard": render_hod_dashboard()
+        elif page == "Analytics": render_hod_analytics()
+        elif page == "Profile": render_hod_profile()
+        elif page == "Leaves": render_hod_leaves()
+        elif page == "Reports": render_hod_reports()
+        
+    elif role == "Principal":
+        if page == "Dashboard": render_principal_dashboard()
+        elif page == "Analytics": render_principal_analytics()
+        elif page == "Profile": render_principal_profile()
+        elif page == "Leaves": render_principal_leaves()
+        elif page == "Reports": render_principal_reports()
 
 if __name__ == "__main__":
     main()
