@@ -131,12 +131,15 @@ def main():
     
     role = st.session_state.role
     
-    # EXACT requested Student Navigation Order: Dashboard, Profile, Leaves, Analytics, AI Advisor, Reports
+    # Role-Specific Navigation Routing
     if role == "Student":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "AI Advisor", "Reports"])
+    elif role == "Faculty":
+        # Faculty Navigation Order: Dashboard, Profile, Leaves, Analytics, Faculty AI Chat, Report
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
     elif role == "Parent":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
-    elif role in ["Faculty", "HOD", "Principal"]:
+    elif role in ["HOD", "Principal"]:
         page = st.sidebar.radio("Navigation", ["Dashboard", "Analytics", "Profile", "Leaves", "Reports"])
     elif role == "⚙️ Admin / Demo Seeder":
         page = st.sidebar.radio("Navigation", ["Demo Seeder & DB Manager"])
@@ -160,10 +163,11 @@ def main():
         
     elif role == "Faculty":
         if page == "Dashboard": render_faculty_dashboard()
-        elif page == "Analytics": render_faculty_analytics()
         elif page == "Profile": render_faculty_profile()
         elif page == "Leaves": render_faculty_leaves()
-        elif page == "Reports": render_faculty_reports()
+        elif page == "Analytics": render_faculty_analytics()
+        elif page == "Faculty AI Chat": render_faculty_chat()
+        elif page == "Report": render_faculty_reports()
         
     elif role == "HOD":
         if page == "Dashboard": render_hod_dashboard()
