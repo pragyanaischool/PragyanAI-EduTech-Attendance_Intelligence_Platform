@@ -1,4 +1,5 @@
 import streamlit as st
+from modules.database import PragyanDatabase
 from utils.helpers import render_brand_logo
 
 # --- Import Student Views ---
@@ -39,6 +40,9 @@ from views.parent_profile import render_parent_profile
 from views.parent_chat import render_parent_chat
 from views.parent_analytics import render_parent_analytics
 
+# --- Import Admin Seeder View ---
+from views.admin_demo_seeder import render_admin_demo_seeder
+
 # --- Streamlit Page Configuration ---
 st.set_page_config(
     page_title="PragyanAI Attendance Intelligence Platform",
@@ -48,7 +52,9 @@ st.set_page_config(
 )
 
 def main():
-    # 1. Initialize Global Session State Defaults
+    # 1. Initialize Central Database & Session State Defaults
+    PragyanDatabase.initialize_database()
+
     if "role" not in st.session_state:
         st.session_state.role = "Student"
     if "user_name" not in st.session_state:
@@ -61,7 +67,7 @@ def main():
                 "date": "2026-09-01", 
                 "author": "Dr. Principal (Executive Deanery)", 
                 "priority": "🔴 High", 
-                "content": "All students must maintain a strict 75% attendance record across all courses to qualify for upcoming mid-semester examinations starting later this month. Medical certificates must be submitted via the portal."
+                "content": "All students must maintain a strict 75% attendance record across all courses to qualify for upcoming mid-semester examinations starting later this month."
             },
             {
                 "id": 2, 
@@ -78,25 +84,27 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 🔐 Role-Based Access Control")
     
+    role_options = ["Student", "Faculty", "HOD", "Principal", "Parent", "⚙️ Admin / Demo Seeder"]
+    current_role_index = role_options.index(st.session_state.role) if st.session_state.role in role_options else 0
+    
     selected_role = st.sidebar.selectbox(
         "Select User Role", 
-        ["Student", "Faculty", "HOD", "Principal", "Parent"],
-        index=["Student", "Faculty", "HOD", "Principal", "Parent"].index(st.session_state.role)
+        role_options,
+        index=current_role_index
     )
     
-    # If role changes, reset default user name accordingly
     if selected_role != st.session_state.role:
         st.session_state.role = selected_role
         default_names = {
             "Student": "Sateesh Ambesange",
-            "Faculty": "Dr. Faculty (ECE)",
+            "Faculty": "Dr. Smitha Rao",
             "HOD": "Dr. HOD (ECE)",
             "Principal": "Dr. Principal",
-            "Parent": "Mr. Ambesange (Guardian)"
+            "Parent": "Mr. Ambesange (Guardian)",
+            "⚙️ Admin / Demo Seeder": "System Administrator"
         }
         st.session_state.user_name = default_names.get(selected_role, "User")
 
-    # Editable Active User Name
     user_name = st.sidebar.text_input("Active User Name", value=st.session_state.user_name)
     st.session_state.user_name = user_name
 
@@ -111,8 +119,10 @@ def main():
         page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
     elif role in ["Faculty", "HOD", "Principal"]:
         page = st.sidebar.radio("Navigation", ["Dashboard", "Analytics", "Profile", "Leaves", "Reports"])
+    elif role == "⚙️ Admin / Demo Seeder":
+        page = st.sidebar.radio("Navigation", ["Demo Seeder & DB Manager"])
     else:
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile"])
+        page = st.sidebar.radio("Navigation", ["Dashboard"])
 
     st.sidebar.markdown("---")
     st.sidebar.info(f"🟢 Active Session\n\n**User:** {user_name}\n**Role:** {role}")
@@ -152,6 +162,9 @@ def main():
         elif page == "Profile": render_principal_profile()
         elif page == "Leaves": render_principal_leaves()
         elif page == "Reports": render_principal_reports()
+        
+    elif role == "⚙️ Admin / Demo Seeder":
+        render_admin_demo_seeder()
 
 if __name__ == "__main__":
     main()
