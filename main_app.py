@@ -58,7 +58,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-st.image("")
+st.image("assets/PragyanAI_Transperent.png")
 def render_login_portal():
     """Renders a secure institutional login gate for all user roles."""
     render_brand_logo(width=280, is_sidebar=False)
