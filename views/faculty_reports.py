@@ -12,6 +12,9 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 
+# PyMuPDF for Crisp Page-by-Page Image Rendering
+import fitz 
+
 def generate_pdf_ledger_bytes(subject_name, faculty_name, semester, dept, college_name, students_data):
     """
     Generates a professional multi-page institutional PDF attendance ledger using ReportLab.
@@ -177,7 +180,7 @@ def generate_pdf_ledger_bytes(subject_name, faculty_name, semester, dept, colleg
 def render_faculty_reports():
     """
     Renders the Faculty Attendance Ledger & Executive Report Generation Hub with persistent state,
-    robust browser object PDF display viewer, and CSV/PDF download capabilities.
+    PyMuPDF page-by-page image viewer, and CSV/PDF download capabilities.
     """
     # 1. Safe Brand Watermark Logo Integration
     render_brand_logo(width=220, is_sidebar=False)
@@ -332,7 +335,7 @@ def render_faculty_reports():
 
         st.markdown("---")
 
-        # 6. PDF & CSV Export Studio with Robust Object Display Viewer
+        # 6. PDF & CSV Export Studio with Page-by-Page PyMuPDF Image Viewer
         st.markdown("### 📥 Official PDF Ledger & Spreadsheet Export Studio")
         
         if "cached_pdf_bytes" not in st.session_state:
@@ -365,23 +368,25 @@ def render_faculty_reports():
                 key="download_pdf_btn"
             )
         with dl_c3:
-            show_preview = st.checkbox("👁️ Preview PDF inside app viewer", value=True, key="preview_pdf_toggle")
+            show_preview = st.checkbox("👁️ Preview PDF Page by Page", value=True, key="preview_pdf_toggle")
 
         if show_preview:
-            st.markdown("### 🔍 Institutional PDF Live Document Viewer")
-            base64_pdf = base64.b64encode(st.session_state.cached_pdf_bytes).decode('utf-8')
+            st.markdown("### 🔍 Institutional PDF Document Viewer (Page-by-Page)")
             
-            # Use a robust browser <object> tag which natively handles multi-page embedded PDFs seamlessly
-            pdf_display = f'''
-                <div style="border: 2px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #f8fafc; padding: 4px;">
-                    <object data="data:application/pdf;base64,{base64_pdf}" type="application/pdf" width="100%" height="750px">
-                        <p style="text-align: center; padding: 20px;">
-                            Your browser does not support embedded PDFs. 
-                            Please use the <b>Download Official PDF Ledger</b> button above to view it.
-                        </p>
-                    </object>
-                </div>
-            '''
-            st.markdown(pdf_display, unsafe_allow_html=True)
+            # Use PyMuPDF (fitz) to convert PDF pages to high-res PNG images for foolproof viewing
+            try:
+                pdf_doc = fitz.open(stream=st.session_state.cached_pdf_bytes, filetype="pdf")
+                st.caption(f"📄 Total Pages in Generated Ledger: **{len(pdf_doc)}**")
+                
+                for page_num in range(len(pdf_doc)):
+                    page = pdf_doc.load_page(page_num)
+                    pix = page.get_pixmap(dpi=150) # High quality rendering
+                    img_bytes = pix.tobytes("png")
+                    
+                    st.markdown(f"#### 📑 Report Page {page_num + 1} of {len(pdf_doc)}")
+                    st.image(img_bytes, use_container_width=True)
+                    st.markdown("---")
+            except Exception as e:
+                st.error(f"Error rendering PDF pages: {e}")
     else:
         st.info("👆 Configure your parameters above and click **Generate Comprehensive Attendance Ledger & Report** to initialize your studio.")
