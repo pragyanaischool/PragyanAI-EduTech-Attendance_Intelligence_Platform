@@ -12,8 +12,8 @@ class PragyanDatabase:
     @staticmethod
     def initialize_database():
         """Initializes default database tables in st.session_state if not already present."""
-        if "db_initialized" in st.session_state and st.session_state.db_initialized:
-            return
+        if "db_initialized" not in st.session_state:
+            st.session_state.db_initialized = False
 
         # 1. Expanded Students Database with Multi-Subject Tracking Across Semesters 3, 5, and 7
         if "students_db" not in st.session_state:
@@ -411,13 +411,21 @@ class PragyanDatabase:
     def get_faculty_leaves():
         """Retrieves faculty and HOD leave/sabbatical requests from database."""
         PragyanDatabase.initialize_database()
+        if "faculty_leaves_db" not in st.session_state:
+            st.session_state.faculty_leaves_db = [
+                {"id": 1, "faculty_name": "Dr. Smitha Rao", "department": "Electronics & Communication (ECE)", "start_date": "2026-10-01", "end_date": "2026-10-15", "reason": "International IEEE VLSI Summit Keynote Sabbatical", "status": "Pending"},
+                {"id": 2, "faculty_name": "Prof. Meena Hegde", "department": "Electronics & Communication (ECE)", "start_date": "2026-09-15", "end_date": "2026-09-16", "reason": "Medical Leave", "status": "Pending"},
+                {"id": 3, "faculty_name": "Dr. Anand Kumar", "department": "Electronics & Communication (ECE)", "start_date": "2026-08-01", "end_date": "2026-08-03", "reason": "Personal Travel", "status": "Approved"},
+                {"id": 4, "faculty_name": "Prof. Sneha Patil", "department": "Electronics & Communication (ECE)", "start_date": "2026-09-20", "end_date": "2026-09-25", "reason": "Sabbatical Research", "status": "Approved"}
+            ]
         return st.session_state.faculty_leaves_db
 
     @staticmethod
     def update_faculty_leave_status(leave_id, new_status):
         """Updates the approval status of a faculty/HOD leave request in database."""
         PragyanDatabase.initialize_database()
-        for leave in st.session_state.faculty_leaves_db:
+        leaves = PragyanDatabase.get_faculty_leaves()
+        for leave in leaves:
             if leave["id"] == leave_id:
                 leave["status"] = new_status
                 break
