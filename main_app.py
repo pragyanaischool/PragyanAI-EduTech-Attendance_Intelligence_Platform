@@ -35,6 +35,13 @@ from views.principal_leaves import render_principal_leaves
 from views.principal_reports import render_principal_reports
 from views.principal_analytics import render_principal_analytics
 
+# --- Import New Principal College Views ---
+from views.principal_college_profile import render_principal_college_profile
+from views.college_calendar import render_college_calendar
+from views.college_faculty import render_college_faculty
+from views.college_analytics import render_college_analytics
+from views.college_chatbot import render_college_chatbot
+
 # --- Import Parent Views ---
 from views.parent_dashboard import render_parent_dashboard
 from views.parent_profile import render_parent_profile
@@ -72,7 +79,7 @@ def render_login_portal():
                 "Student": ("Sateesh Ambesange", "student2026"),
                 "Faculty": ("Dr. Smitha Rao", "faculty101"),
                 "HOD": ("Dr. HOD (ECE)", "hod2026"),
-                "Principal": ("Dr. Principal", "principal1"),
+                "Principal": ("Dr. Principal Dean", "principal1"),
                 "Parent": ("Mr. Ambesange (Guardian)", "parent42"),
                 "⚙️ Admin / Demo Seeder": ("System Administrator", "adminpass")
             }
@@ -142,7 +149,20 @@ def main():
     elif role == "HOD":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Dept Profile", "Leaves", "Analytics", "HOD AI Chat", "Report"])
     elif role == "Principal":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Analytics", "Profile", "Leaves", "Reports"])
+        page = st.sidebar.radio(
+            "Navigation", 
+            [
+                "Dashboard",
+                "Profile",
+                "College Profile",
+                "College Calender",
+                "College Faculty Page",
+                "Leaves",
+                "College Analytics",
+                "College AI ChatBot",
+                "Reports"
+            ]
+        )
     elif role == "⚙️ Admin / Demo Seeder":
         page = st.sidebar.radio("Navigation", ["Demo Seeder & DB Manager"])
     else:
@@ -182,9 +202,13 @@ def main():
         
     elif role == "Principal":
         if page == "Dashboard": render_principal_dashboard()
-        elif page == "Analytics": render_principal_analytics()
         elif page == "Profile": render_principal_profile()
+        elif page == "College Profile": render_principal_college_profile()
+        elif page == "College Calender": render_college_calendar()
+        elif page == "College Faculty Page": render_college_faculty()
         elif page == "Leaves": render_principal_leaves()
+        elif page == "College Analytics": render_college_analytics()
+        elif page == "College AI ChatBot": render_college_chatbot()
         elif page == "Reports": render_principal_reports()
         
     elif role == "⚙️ Admin / Demo Seeder":
