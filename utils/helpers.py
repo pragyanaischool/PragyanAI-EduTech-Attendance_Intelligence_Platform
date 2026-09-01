@@ -3,6 +3,34 @@ import os
 
 def render_brand_logo(width=220, is_sidebar=False):
     """
+    Renders the official PragyanAI brand logo image with robust fallback handling.
+    Replaces textual headers with 'assets/PragyanAI_Transperent.png'.
+    """
+    logo_path = "assets/PragyanAI_Transperent.png"
+    
+    # Check if logo file exists locally
+    if os.path.exists(logo_path):
+        if is_sidebar:
+            st.sidebar.image(logo_path, width=width)
+        else:
+            st.image(logo_path, width=width)
+    else:
+        # Fallback professional styled header if asset is missing during build
+        fallback_html = f"""
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <div style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); padding: 8px 14px; border-radius: 8px; color: white; font-weight: bold; font-size: 1.1rem;">
+                PragyanAI
+            </div>
+            <span style="color: #94a3b8; font-size: 0.85rem;">Institutional Platform</span>
+        </div>
+        """
+        if is_sidebar:
+            st.sidebar.markdown(fallback_html, unsafe_allow_html=True)
+        else:
+            st.markdown(fallback_html, unsafe_allow_html=True)
+'''            
+def render_brand_logo(width=220, is_sidebar=False):
+    """
     Safely renders the PragyanAI brand watermark logo, catching any missing 
     file errors to prevent st.runtime.media_file_storage.MediaFileStorageError crashes.
     
@@ -36,3 +64,4 @@ def render_brand_logo(width=220, is_sidebar=False):
             st.sidebar.markdown(f"### {fallback_text}")
         else:
             st.markdown(f"### {fallback_text}")
+'''
