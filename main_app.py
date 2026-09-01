@@ -172,7 +172,7 @@ def main():
     # --- Central Routing Dispatcher ---
     if role == "Student":
         if page == "Dashboard": render_student_dashboard()
-        elif page == "Profile": render_student_profile()
+        elif page == "Student Profile": render_student_profile()
         elif page == "Leaves": render_student_leaves()
         elif page == "Analytics": render_student_analytics()
         elif page == "AI Advisor": render_student_chat()
@@ -186,7 +186,7 @@ def main():
         
     elif role == "Faculty":
         if page == "Dashboard": render_faculty_dashboard()
-        elif page == "Profile": render_faculty_profile()
+        elif page == "Faculty Profile": render_faculty_profile()
         elif page == "Leaves": render_faculty_leaves()
         elif page == "Analytics": render_faculty_analytics()
         elif page == "Faculty AI Chat": render_faculty_chat()
@@ -194,7 +194,7 @@ def main():
         
     elif role == "HOD":
         if page == "Dashboard": render_hod_dashboard()
-        elif page == "Profile": render_hod_profile()
+        elif page == "Hod Profile": render_hod_profile()
         elif page == "Dept Profile": render_hod_dept_profile()
         elif page == "Leaves": render_hod_leaves()
         elif page == "Analytics": render_hod_analytics()
@@ -203,7 +203,7 @@ def main():
         
     elif role == "Principal":
         if page == "Dashboard": render_principal_dashboard()
-        elif page == "Profile": render_principal_profile()
+        elif page == "Princial Profile": render_principal_profile()
         elif page == "College Profile": render_principal_college_profile()
         elif page == "College Calender": render_college_calendar()
         elif page == "College Faculty Page": render_college_faculty()
