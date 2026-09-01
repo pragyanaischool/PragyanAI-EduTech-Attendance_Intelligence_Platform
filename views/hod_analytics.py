@@ -88,8 +88,8 @@ def render_hod_analytics():
                     y="Assigned Courses Count",
                     text="Assigned Courses Count",
                     title="Active Course Load Distribution",
-                    color="Assigned Courses Count",
-                    color_continuousScale="Teal"
+                    color="Faculty Name",
+                    color_discrete_sequence=px.colors.qualitative.Prism
                 )
                 st.plotly_chart(fig_fac_load, use_container_width=True)
         else:
@@ -101,7 +101,6 @@ def render_hod_analytics():
         st.markdown("Auditing scheduled semester curriculum against live course allocations.")
 
         if not course_df.empty:
-            # Enrich course allocation data with dummy planned vs delivered metrics for analytical depth
             pacing_analysis = course_df.copy()
             pacing_analysis["Planned Classes"] = 45
             pacing_analysis["Delivered Classes"] = [42, 38, 44, 31][:len(pacing_analysis)] # simulated delivery progress
@@ -164,8 +163,8 @@ def render_hod_analytics():
                 y="Avg_Attendance",
                 text="Avg_Attendance",
                 title="Average Cohort Turnout % per Semester",
-                color="Avg_Attendance",
-                color_continuousScale="Blues"
+                color="semester",
+                color_discrete_sequence=px.colors.qualitative.Bold
             )
             st.plotly_chart(fig_sem, use_container_width=True)
         else:
