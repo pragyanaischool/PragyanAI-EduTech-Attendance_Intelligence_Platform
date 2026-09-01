@@ -377,7 +377,43 @@ class PragyanDatabase:
         PragyanDatabase.initialize_database()
         st.session_state.principal_executive_profile_db = profile_data
         st.session_state["user_name"] = profile_data.get("full_name", "Dr. Principal Dean")
-
+    
+    @staticmethod
+    def get_holiday_calendar():
+        """Retrieves the official institutional master calendar (holidays, exams, events, breaks) from database."""
+        PragyanDatabase.initialize_database()
+        if "holiday_calendar_db" not in st.session_state:
+            st.session_state.holiday_calendar_db = [
+                # January 2026
+                {"date": "2026-01-26", "year": 2026, "month": "January", "title": "Republic Day", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
+                # March 2026
+                {"date": "2026-03-04", "year": 2026, "month": "March", "title": "Holi Festival", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                {"date": "2026-03-19", "year": 2026, "month": "March", "title": "Ugadi / Gudi Padwa", "category": "🟡 Restricted Holiday", "badge_color": "#f59e0b"},
+                # April 2026
+                {"date": "2026-04-03", "year": 2026, "month": "April", "title": "Good Friday", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                # June 2026 (Semester Break)
+                {"date": "2026-06-01 to 2026-06-15", "year": 2026, "month": "June", "title": "Summer Semester In-Between Break", "category": "🏖️ Semester Break", "badge_color": "#10b981"},
+                # August 2026
+                {"date": "2026-08-15", "year": 2026, "month": "August", "title": "Independence Day", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
+                {"date": "2026-08-21", "year": 2026, "month": "August", "title": "Varalakshmi Vratha", "category": "🟡 Restricted Holiday", "badge_color": "#f59e0b"},
+                # September 2026
+                {"date": "2026-09-14", "year": 2026, "month": "September", "title": "Ganesh Chaturthi", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                {"date": "2026-09-22 to 2026-09-26", "year": 2026, "month": "September", "title": "Mid-Term Continuous Assessments (CA-1)", "category": "📝 Examination Window", "badge_color": "#6366f1"},
+                # October 2026
+                {"date": "2026-10-02", "year": 2026, "month": "October", "title": "Gandhi Jayanthi", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
+                {"date": "2026-10-05", "year": 2026, "month": "October", "title": "PragyanAI Annual Deep-Tech Hackathon", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
+                {"date": "2026-10-12 to 2026-10-17", "year": 2026, "month": "October", "title": "Practical & Lab Viva Examinations", "category": "📝 Examination Window", "badge_color": "#6366f1"},
+                {"date": "2026-10-18", "year": 2026, "month": "October", "title": "IEEE International Conference on VLSI & AI", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
+                {"date": "2026-10-20", "year": 2026, "month": "October", "title": "Vijayadashami (Dasara)", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                # November 2026
+                {"date": "2026-11-08", "year": 2026, "month": "November", "title": "Deepavali Festival", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                {"date": "2026-11-12", "year": 2026, "month": "November", "title": "Inter-Collegiate Cultural Fest 'Vanya 2026'", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
+                {"date": "2026-11-23 to 2026-12-10", "year": 2026, "month": "November", "title": "End-Semester Terminal Examinations", "category": "📝 Examination Window", "badge_color": "#6366f1"},
+                # December 2026
+                {"date": "2026-12-11 to 2026-12-31", "year": 2026, "month": "December", "title": "Winter Semester Between Break", "category": "🏖️ Semester Break", "badge_color": "#10b981"},
+                {"date": "2026-12-25", "year": 2026, "month": "December", "title": "Christmas Day", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"}
+            ]
+        return st.session_state.holiday_calendar_db
     @staticmethod
     def get_holiday_calendar():
         """Retrieves the official institutional holiday calendar from database, seeding defaults if empty."""
