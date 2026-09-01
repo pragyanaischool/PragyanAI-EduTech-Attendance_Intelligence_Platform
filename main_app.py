@@ -58,7 +58,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+st.image("")
 def render_login_portal():
     """Renders a secure institutional login gate for all user roles."""
     render_brand_logo(width=280, is_sidebar=False)
@@ -202,7 +202,7 @@ def main():
         
     elif role == "Principal":
         if page == "Dashboard": render_principal_dashboard()
-        elif page == "Profile": render_principal_profile()
+        elif page == "Principal Profile": render_principal_profile()
         elif page == "College Profile": render_principal_college_profile()
         elif page == "College Calender": render_college_calendar()
         elif page == "College Faculty Page": render_college_faculty()
