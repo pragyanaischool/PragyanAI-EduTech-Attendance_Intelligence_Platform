@@ -10,7 +10,7 @@ def render_faculty_profile():
     # 1. Safe Brand Watermark Logo Integration
     render_brand_logo(width=220, is_sidebar=False)
     
-    user_name = st.session_state.get("user_name", "Dr. Faculty 1 (Comp)")
+    user_name = st.session_state.get("user_name", "Dr. Faculty (ECE)")
     
     st.markdown(f"## 👨‍🏫 Faculty Office & Teaching Credentials — {user_name}")
     st.markdown(
