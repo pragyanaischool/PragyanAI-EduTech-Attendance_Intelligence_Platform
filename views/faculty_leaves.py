@@ -7,6 +7,7 @@ def render_faculty_leaves():
     """
     Renders the Faculty Leaves & Student Absence Audit Hub.
     Features:
+    - Faculty's own leave application submission and tracking.
     - List of Students on Leave with filters based on Subject and Date/Month.
     - List of Student Leave Applications (Approved/Pending) with Month & Year filters.
     """
@@ -17,16 +18,50 @@ def render_faculty_leaves():
     PragyanDatabase.initialize_database()
     
     st.markdown(f"# 📋 Faculty Leave Audit & Student Absence Hub — {user_name}")
-    st.markdown("### *Monitor student leave applications, check subject-wise absences, and audit approval statuses.*")
+    st.markdown("### *Manage your faculty leave requests, monitor student absences by subject, and audit approval statuses.*")
     
     st.info(
-        "💡 **Faculty Governance Portal:** Review student leave requests and filter absences by subject "
-        "and date to manage classroom attendance accurately."
+        "💡 **Faculty Governance Portal:** Submit your professional leave applications or review "
+        "student leave requests filtered by subject, month, and year."
     )
 
     st.markdown("---")
 
-    # 2. Section 1: List of Students on Leave (with Subject & Date/Month Filters)
+    # 2. Faculty's Own Leave Application Submission Form (Preserved from previous implementation)
+    with st.form("faculty_own_leave_application_form"):
+        st.markdown("### 📝 Apply for Faculty Leave / On-Duty Assignment")
+        
+        fc1, fc2 = st.columns(2)
+        with fc1:
+            leave_category = st.selectbox(
+                "Leave Category", 
+                ["Academic Conference / Symposium", "Medical Leave", "Research Sabbatical", "Casual Leave", "On-Duty Field Trip"]
+            )
+            f_start_date = st.date_input("Start Date", value=datetime.date.today())
+        with fc2:
+            f_end_date = st.date_input("End Date", value=datetime.date.today() + datetime.timedelta(days=1))
+            sub_doc = st.file_uploader("Upload Supporting Document / Invitation (PDF/JPG)", type=["pdf", "png", "jpg"])
+            
+        f_reason = st.text_area("Reason for Leave / Duty Assignment", placeholder="Specify classes affected and alternative engagement arrangements...")
+
+        if st.form_submit_button("🚀 Submit Faculty Leave Request to HOD / Principal"):
+            if "faculty_leave_requests" not in st.session_state:
+                st.session_state.faculty_leave_requests = []
+            
+            new_faculty_req = {
+                "faculty": user_name,
+                "type": leave_category,
+                "from": str(f_start_date),
+                "to": str(f_end_date),
+                "reason": f_reason,
+                "status": "🟡 Pending Principal / HOD Review"
+            }
+            st.session_state.faculty_leave_requests.insert(0, new_faculty_req)
+            st.success(f"🎉 Faculty **{leave_category}** application successfully submitted for executive review!")
+
+    st.markdown("---")
+
+    # 3. Section: List of Students on Leave (with Subject & Date/Month Filters)
     st.markdown("### 🎓 Students on Leave Roster & Subject Filters")
     st.markdown("Filter active and past student absences by enrolled subject and specific dates or months.")
 
@@ -39,18 +74,18 @@ def render_faculty_leaves():
     ])
 
     # Filter Controls for Students on Leave
-    fc1, fc2, fc3 = st.columns(3)
-    with fc1:
+    f_c1, f_c2, f_c3 = st.columns(3)
+    with f_c1:
         subject_filter = st.selectbox(
             "Filter by Subject", 
             ["All Subjects", "ECE301 - Digital Logic Design", "ECE302 - VLSI Architecture", "ECE303 - Signals & Systems"]
         )
-    with fc2:
+    with f_c2:
         month_roster_filter = st.selectbox(
             "Filter by Month / Period", 
             ["All Time", "September 2026", "August 2026", "July 2026"]
         )
-    with fc3:
+    with f_c3:
         status_roster_filter = st.selectbox(
             "Filter by Approval Status", 
             ["All Statuses", "🟢 Approved", "🟡 Pending Review"]
@@ -76,7 +111,7 @@ def render_faculty_leaves():
 
     st.markdown("---")
 
-    # 3. Section 2: Student Leave Applications Audit & Month/Year Filters
+    # 4. Section: Student Leave Applications Audit & Month/Year Filters
     st.markdown("### 🗄️ Student Leave Applications Audit & Approval Ledger")
     st.markdown("Review all leave applications submitted by students across department courses with Month and Year filtering.")
 
@@ -114,6 +149,7 @@ def render_faculty_leaves():
         st.dataframe({
             "Student Name": [l.get("student") for l in filtered_audit],
             "Roll Number": [l.get("roll", "ECE_2026_0X") for l in filtered_audit],
+            "Subject": [l.get("subject", "ECE301") for l in filtered_audit],
             "Leave Category": [l.get("type") for l in filtered_audit],
             "From Date": [l.get("from") for l in filtered_audit],
             "To Date": [l.get("to") for l in filtered_audit],
