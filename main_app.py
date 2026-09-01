@@ -21,6 +21,7 @@ from views.faculty_analytics import render_faculty_analytics
 # --- Import HOD Views ---
 from views.hod_dashboard import render_hod_dashboard
 from views.hod_profile import render_hod_profile
+from views.hod_dept_profile import render_hod_dept_profile
 from views.hod_chat import render_hod_chat
 from views.hod_leaves import render_hod_leaves
 from views.hod_reports import render_hod_reports
@@ -135,11 +136,12 @@ def main():
     if role == "Student":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "AI Advisor", "Reports"])
     elif role == "Faculty":
-        # Faculty Navigation Order: Dashboard, Profile, Leaves, Analytics, Faculty AI Chat, Report
         page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
     elif role == "Parent":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
-    elif role in ["HOD", "Principal"]:
+    elif role == "HOD":
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Dept Profile", "Leaves", "Analytics", "HOD AI Chat", "Report"])
+    elif role == "Principal":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Analytics", "Profile", "Leaves", "Reports"])
     elif role == "⚙️ Admin / Demo Seeder":
         page = st.sidebar.radio("Navigation", ["Demo Seeder & DB Manager"])
@@ -171,10 +173,12 @@ def main():
         
     elif role == "HOD":
         if page == "Dashboard": render_hod_dashboard()
-        elif page == "Analytics": render_hod_analytics()
         elif page == "Profile": render_hod_profile()
+        elif page == "Dept Profile": render_hod_dept_profile()
         elif page == "Leaves": render_hod_leaves()
-        elif page == "Reports": render_hod_reports()
+        elif page == "Analytics": render_hod_analytics()
+        elif page == "HOD AI Chat": render_hod_chat()
+        elif page == "Report": render_hod_reports()
         
     elif role == "Principal":
         if page == "Dashboard": render_principal_dashboard()
