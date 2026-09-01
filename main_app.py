@@ -51,10 +51,50 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+def render_login_portal():
+    """Renders a secure institutional login gate for all user roles."""
+    render_brand_logo(width=280, is_sidebar=False)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("<h2 style='text-align: center;'>🔐 PragyanAI Universal Login Gate</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #94a3b8;'>Select your institutional role and enter credentials to access your portal.</p>", unsafe_allow_html=True)
+        
+        with st.form("institutional_login_form"):
+            selected_role = st.selectbox(
+                "Select User Persona", 
+                ["Student", "Faculty", "HOD", "Principal", "Parent", "⚙️ Admin / Demo Seeder"]
+            )
+            
+            # Default mock credentials helper text
+            default_user_map = {
+                "Student": ("Sateesh Ambesange", "student2026"),
+                "Faculty": ("Dr. Smitha Rao", "faculty101"),
+                "HOD": ("Dr. HOD (ECE)", "hod2026"),
+                "Principal": ("Dr. Principal", "principal1"),
+                "Parent": ("Mr. Ambesange (Guardian)", "parent42"),
+                "⚙️ Admin / Demo Seeder": ("System Administrator", "adminpass")
+            }
+            
+            suggested_name, suggested_pass = default_user_map.get(selected_role, ("User", "password"))
+            
+            username_input = st.text_input("Institutional ID / Name", value=suggested_name)
+            password_input = st.text_input("Secure Passkey", type="password", value=suggested_pass)
+            
+            submitted = st.form_submit_button("🚀 Secure Login to Portal")
+            if submitted:
+                st.session_state.authenticated = True
+                st.session_state.role = selected_role
+                st.session_state.user_name = username_input
+                st.success(f"Authentication successful! Welcome to PragyanAI, **{username_input}**.")
+                st.rerun()
+
 def main():
-    # 1. Initialize Central Database & Session State Defaults
     PragyanDatabase.initialize_database()
 
+    # Authentication state initialization
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
     if "role" not in st.session_state:
         st.session_state.role = "Student"
     if "user_name" not in st.session_state:
@@ -67,54 +107,33 @@ def main():
                 "date": "2026-09-01", 
                 "author": "Dr. Principal (Executive Deanery)", 
                 "priority": "🔴 High", 
-                "content": "All students must maintain a strict 75% attendance record across all courses to qualify for upcoming mid-semester examinations starting later this month."
-            },
-            {
-                "id": 2, 
-                "title": "IEEE Technical Paper Presentation Symposium", 
-                "date": "2026-08-28", 
-                "author": "Dr. HOD (ECE)", 
-                "priority": "🟡 Medium", 
-                "content": "ECE department students are invited to register for the upcoming national robotics and AI symposium hosted in Block C auditorium."
+                "content": "All students must maintain a strict 75% attendance record across all courses to qualify for upcoming mid-semester examinations."
             }
         ]
 
-    # 2. Sidebar Authentication & Role Switcher
+    # If not authenticated, render login gate
+    if not st.session_state.authenticated:
+        render_login_portal()
+        return
+
+    # --- Authenticated Sidebar Navigation ---
     render_brand_logo(width=180, is_sidebar=True)
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🔐 Role-Based Access Control")
+    st.sidebar.markdown("### 🟢 Active Session")
+    st.sidebar.info(f"**User:** {st.session_state.user_name}\n\n**Role:** {st.session_state.role}")
     
-    role_options = ["Student", "Faculty", "HOD", "Principal", "Parent", "⚙️ Admin / Demo Seeder"]
-    current_role_index = role_options.index(st.session_state.role) if st.session_state.role in role_options else 0
-    
-    selected_role = st.sidebar.selectbox(
-        "Select User Role", 
-        role_options,
-        index=current_role_index
-    )
-    
-    if selected_role != st.session_state.role:
-        st.session_state.role = selected_role
-        default_names = {
-            "Student": "Sateesh Ambesange",
-            "Faculty": "Dr. Smitha Rao",
-            "HOD": "Dr. HOD (ECE)",
-            "Principal": "Dr. Principal",
-            "Parent": "Mr. Ambesange (Guardian)",
-            "⚙️ Admin / Demo Seeder": "System Administrator"
-        }
-        st.session_state.user_name = default_names.get(selected_role, "User")
-
-    user_name = st.sidebar.text_input("Active User Name", value=st.session_state.user_name)
-    st.session_state.user_name = user_name
+    if st.sidebar.button("🚪 Logout / Switch Role"):
+        st.session_state.authenticated = False
+        st.rerun()
 
     st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🧭 Portal Navigation")
     
-    # 3. Role-Specific Navigation Menus
     role = st.session_state.role
     
+    # EXACT requested Student Navigation Order: Dashboard, Profile, Leaves, Analytics, AI Advisor, Reports
     if role == "Student":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "AI Advisor", "Analytics", "Profile", "Leaves", "Reports"])
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "AI Advisor", "Reports"])
     elif role == "Parent":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
     elif role in ["Faculty", "HOD", "Principal"]:
@@ -124,16 +143,13 @@ def main():
     else:
         page = st.sidebar.radio("Navigation", ["Dashboard"])
 
-    st.sidebar.markdown("---")
-    st.sidebar.info(f"🟢 Active Session\n\n**User:** {user_name}\n**Role:** {role}")
-
-    # 4. Central Routing Engine (Isolated View Dispatcher)
+    # --- Central Routing Dispatcher ---
     if role == "Student":
         if page == "Dashboard": render_student_dashboard()
-        elif page == "AI Advisor": render_student_chat()
-        elif page == "Analytics": render_student_analytics()
         elif page == "Profile": render_student_profile()
         elif page == "Leaves": render_student_leaves()
+        elif page == "Analytics": render_student_analytics()
+        elif page == "AI Advisor": render_student_chat()
         elif page == "Reports": render_student_reports()
         
     elif role == "Parent":
