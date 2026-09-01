@@ -130,3 +130,22 @@ class PragyanDatabase:
     def assign_adhoc_class(adhoc_data):
         PragyanDatabase.initialize_database()
         st.session_state.adhoc_classes_db.insert(0, adhoc_data)
+    @staticmethod
+    def get_holiday_calendar():
+        """Retrieves the official institutional holiday calendar from database, seeding defaults if empty."""
+        PragyanDatabase.initialize_database()
+        if "holiday_calendar_db" not in st.session_state:
+            st.session_state.holiday_calendar_db = [
+                {"Year": "2026", "Month": "January", "Holiday Name": "Republic Day", "Date": "2026-01-26", "Type": "🔴 National Holiday"},
+                {"Year": "2026", "Month": "March", "Holiday Name": "Holi", "Date": "2026-03-04", "Type": "🔵 Gazetted Holiday"},
+                {"Year": "2026", "Month": "March", "Holiday Name": "Ugadi / Gudi Padwa", "Date": "2026-03-19", "Type": "🟡 Restricted Holiday"},
+                {"Year": "2026", "Month": "April", "Holiday Name": "Good Friday", "Date": "2026-04-03", "Type": "🔵 Gazetted Holiday"},
+                {"Year": "2026", "Month": "August", "Holiday Name": "Independence Day", "Date": "2026-08-15", "Type": "🔴 National Holiday"},
+                {"Year": "2026", "Month": "August", "Holiday Name": "Varalakshmi Vratha", "Date": "2026-08-21", "Type": "🟡 Restricted Holiday"},
+                {"Year": "2026", "Month": "September", "Holiday Name": "Ganesh Chaturthi", "Date": "2026-09-14", "Type": "🔵 Gazetted Holiday"},
+                {"Year": "2026", "Month": "October", "Holiday Name": "Gandhi Jayanthi", "Date": "2026-10-02", "Type": "🔴 National Holiday"},
+                {"Year": "2026", "Month": "October", "Holiday Name": "Vijayadashami (Dasara)", "Date": "2026-10-20", "Type": "🔵 Gazetted Holiday"},
+                {"Year": "2026", "Month": "November", "Holiday Name": "Deepavali", "Date": "2026-11-08", "Type": "🔵 Gazetted Holiday"},
+                {"Year": "2026", "Month": "December", "Holiday Name": "Christmas Day", "Date": "2026-12-25", "Type": "🔵 Gazetted Holiday"}
+            ]
+        return st.session_state.holiday_calendar_db
