@@ -1,4 +1,13 @@
 import streamlit as st
+
+# --- 1. MUST BE THE VERY FIRST STREAMLIT COMMAND ---
+st.set_page_config(
+    page_title="PragyanAI Attendance Intelligence Platform",
+    page_icon="🎓",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 from modules.database import PragyanDatabase
 from utils.helpers import render_brand_logo
 
@@ -42,23 +51,16 @@ from views.college_faculty import render_college_faculty
 from views.college_analytics import render_college_analytics
 from views.college_chatbot import render_college_chatbot
 
-# --- Import Parent Views ---
+# --- Import Parent Views & Portal ---
 from views.parent_dashboard import render_parent_dashboard
 from views.parent_profile import render_parent_profile
 from views.parent_chat import render_parent_chat
 from views.parent_analytics import render_parent_analytics
+from views.parent_portal import render_parent_portal
 
 # --- Import Admin Seeder View ---
 from views.admin_demo_seeder import render_admin_demo_seeder
 
-# --- Streamlit Page Configuration ---
-st.image("assets/PragyanAI_Transperent.png")
-st.set_page_config(
-    page_title="PragyanAI Attendance Intelligence Platform",
-    page_icon="🎓",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 def render_login_portal():
     """Renders a secure institutional login gate for all user roles."""
@@ -146,7 +148,7 @@ def main():
     elif role == "Faculty":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Faculty Profile", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
     elif role == "Parent":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Analytics", "AI Chat Bot"])
     elif role == "HOD":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Hod Profile", "Dept Profile", "Leaves", "Analytics", "HOD AI Chat", "Report"])
     elif role == "Principal":
@@ -179,10 +181,8 @@ def main():
         elif page == "Reports": render_student_reports()
         
     elif role == "Parent":
-        if page == "Dashboard": render_parent_dashboard()
-        elif page == "Guardian AI Chat": render_parent_chat()
-        elif page == "Analytics": render_parent_analytics()
-        elif page == "Profile": render_parent_profile()
+        # Routes directly to the comprehensive Parent Portal hub with Dashboard, Profile, Analytics, and AI Chat Bot tabs
+        render_parent_portal()
         
     elif role == "Faculty":
         if page == "Dashboard": render_faculty_dashboard()
