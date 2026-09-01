@@ -5,7 +5,7 @@ class PragyanDatabase:
     """
     Core Database & Session State Management for PragyanAI Institutional Platform.
     Handles persistent storage for students with comprehensive multi-subject attendance tracking, 
-    faculty portfolios with degrees/designations/experience metrics, department rosters, 
+    faculty portfolios with departments, degrees, designations, and experience metrics, 
     semester course allocations, leave records, adhoc duties, and principal executive profiles.
     """
 
@@ -183,7 +183,7 @@ class PragyanDatabase:
                 }
             ]
 
-        # 4. Department Faculty Roster (Enhanced with Degree, Designation, Joining Date, Experience in College, and Total Experience)
+        # 4. Department Faculty Roster (Explicit Department Key & Detailed Experience Metrics)
         if "department_faculty_db" not in st.session_state:
             st.session_state.department_faculty_db = [
                 {
