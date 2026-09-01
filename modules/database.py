@@ -409,7 +409,7 @@ class PragyanDatabase:
     # --- Faculty Leave Accessors & Persistence ---
     @staticmethod
     def get_faculty_leaves():
-        """Retrieves faculty and HOD leave/sabbatical requests from database."""
+        """Retrieves faculty and HOD leave/sabbatical requests from database, auto-seeding if missing."""
         PragyanDatabase.initialize_database()
         if "faculty_leaves_db" not in st.session_state:
             st.session_state.faculty_leaves_db = [
@@ -449,4 +449,6 @@ class PragyanDatabase:
     def get_holiday_calendar():
         """Retrieves the official institutional master calendar (holidays, exams, events, breaks) from database."""
         PragyanDatabase.initialize_database()
+        if "holiday_calendar_db" not in st.session_state:
+            PragyanDatabase.initialize_database()
         return st.session_state.holiday_calendar_db
