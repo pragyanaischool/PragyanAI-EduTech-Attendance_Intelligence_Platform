@@ -5,8 +5,8 @@ class PragyanDatabase:
     """
     Core Database & Session State Management for PragyanAI Institutional Platform.
     Handles persistent storage for students with comprehensive multi-subject attendance tracking, 
-    faculty portfolios with departments, degrees, designations, and experience metrics, 
-    semester course allocations, leave records, adhoc duties, and principal executive profiles.
+    faculty portfolios with departments, degrees, designations, experience metrics, leave applications,
+    semester course allocations, adhoc duties, master calendars, and principal executive profiles.
     """
 
     @staticmethod
@@ -183,7 +183,7 @@ class PragyanDatabase:
                 }
             ]
 
-        # 4. Department Faculty Roster (Explicit Department Key & Detailed Experience Metrics)
+        # 4. Department Faculty Roster
         if "department_faculty_db" not in st.session_state:
             st.session_state.department_faculty_db = [
                 {
@@ -301,6 +301,48 @@ class PragyanDatabase:
                 "pdf_logging": True
             }
 
+        # 8. Faculty Leave Records Database (Connected to HOD & Principal Leave Portals)
+        if "faculty_leaves_db" not in st.session_state:
+            st.session_state.faculty_leaves_db = [
+                {"id": 1, "faculty_name": "Dr. Smitha Rao", "department": "Electronics & Communication (ECE)", "start_date": "2026-10-01", "end_date": "2026-10-15", "reason": "International IEEE VLSI Summit Keynote Sabbatical", "status": "Pending"},
+                {"id": 2, "faculty_name": "Prof. Meena Hegde", "department": "Electronics & Communication (ECE)", "start_date": "2026-09-15", "end_date": "2026-09-16", "reason": "Medical Leave", "status": "Pending"},
+                {"id": 3, "faculty_name": "Dr. Anand Kumar", "department": "Electronics & Communication (ECE)", "start_date": "2026-08-01", "end_date": "2026-08-03", "reason": "Personal Travel", "status": "Approved"},
+                {"id": 4, "faculty_name": "Prof. Sneha Patil", "department": "Electronics & Communication (ECE)", "start_date": "2026-09-20", "end_date": "2026-09-25", "reason": "Sabbatical Research", "status": "Approved"}
+            ]
+
+        # 9. Institutional Master Calendar Database
+        if "holiday_calendar_db" not in st.session_state:
+            st.session_state.holiday_calendar_db = [
+                # January 2026
+                {"date": "2026-01-26", "year": 2026, "month": "January", "title": "Republic Day", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
+                # March 2026
+                {"date": "2026-03-04", "year": 2026, "month": "March", "title": "Holi Festival", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                {"date": "2026-03-19", "year": 2026, "month": "March", "title": "Ugadi / Gudi Padwa", "category": "🟡 Restricted Holiday", "badge_color": "#f59e0b"},
+                # April 2026
+                {"date": "2026-04-03", "year": 2026, "month": "April", "title": "Good Friday", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                # June 2026 (Semester Break)
+                {"date": "2026-06-01 to 2026-06-15", "year": 2026, "month": "June", "title": "Summer Semester In-Between Break", "category": "🏖️ Semester Break", "badge_color": "#10b981"},
+                # August 2026
+                {"date": "2026-08-15", "year": 2026, "month": "August", "title": "Independence Day", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
+                {"date": "2026-08-21", "year": 2026, "month": "August", "title": "Varalakshmi Vratha", "category": "🟡 Restricted Holiday", "badge_color": "#f59e0b"},
+                # September 2026
+                {"date": "2026-09-14", "year": 2026, "month": "September", "title": "Ganesh Chaturthi", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                {"date": "2026-09-22 to 2026-09-26", "year": 2026, "month": "September", "title": "Mid-Term Continuous Assessments (CA-1)", "category": "📝 Examination Window", "badge_color": "#6366f1"},
+                # October 2026
+                {"date": "2026-10-02", "year": 2026, "month": "October", "title": "Gandhi Jayanthi", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
+                {"date": "2026-10-05", "year": 2026, "month": "October", "title": "PragyanAI Annual Deep-Tech Hackathon", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
+                {"date": "2026-10-12 to 2026-10-17", "year": 2026, "month": "October", "title": "Practical & Lab Viva Examinations", "category": "📝 Examination Window", "badge_color": "#6366f1"},
+                {"date": "2026-10-18", "year": 2026, "month": "October", "title": "IEEE International Conference on VLSI & AI", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
+                {"date": "2026-10-20", "year": 2026, "month": "October", "title": "Vijayadashami (Dasara)", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                # November 2026
+                {"date": "2026-11-08", "year": 2026, "month": "November", "title": "Deepavali Festival", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
+                {"date": "2026-11-12", "year": 2026, "month": "November", "title": "Inter-Collegiate Cultural Fest 'Vanya 2026'", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
+                {"date": "2026-11-23 to 2026-12-10", "year": 2026, "month": "November", "title": "End-Semester Terminal Examinations", "category": "📝 Examination Window", "badge_color": "#6366f1"},
+                # December 2026
+                {"date": "2026-12-11 to 2026-12-31", "year": 2026, "month": "December", "title": "Winter Semester Between Break", "category": "🏖️ Semester Break", "badge_color": "#10b981"},
+                {"date": "2026-12-25", "year": 2026, "month": "December", "title": "Christmas Day", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"}
+            ]
+
         st.session_state.db_initialized = True
 
     # --- Student Database Accessors ---
@@ -364,6 +406,22 @@ class PragyanDatabase:
         PragyanDatabase.initialize_database()
         st.session_state.adhoc_classes_db.insert(0, adhoc_data)
 
+    # --- Faculty Leave Accessors & Persistence ---
+    @staticmethod
+    def get_faculty_leaves():
+        """Retrieves faculty and HOD leave/sabbatical requests from database."""
+        PragyanDatabase.initialize_database()
+        return st.session_state.faculty_leaves_db
+
+    @staticmethod
+    def update_faculty_leave_status(leave_id, new_status):
+        """Updates the approval status of a faculty/HOD leave request in database."""
+        PragyanDatabase.initialize_database()
+        for leave in st.session_state.faculty_leaves_db:
+            if leave["id"] == leave_id:
+                leave["status"] = new_status
+                break
+
     # --- Principal Profile Database Accessors & Persistence ---
     @staticmethod
     def get_principal_profile():
@@ -377,59 +435,10 @@ class PragyanDatabase:
         PragyanDatabase.initialize_database()
         st.session_state.principal_executive_profile_db = profile_data
         st.session_state["user_name"] = profile_data.get("full_name", "Dr. Principal Dean")
-    
+
+    # --- Institutional Calendar Accessor ---
     @staticmethod
     def get_holiday_calendar():
         """Retrieves the official institutional master calendar (holidays, exams, events, breaks) from database."""
         PragyanDatabase.initialize_database()
-        if "holiday_calendar_db" not in st.session_state:
-            st.session_state.holiday_calendar_db = [
-                # January 2026
-                {"date": "2026-01-26", "year": 2026, "month": "January", "title": "Republic Day", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
-                # March 2026
-                {"date": "2026-03-04", "year": 2026, "month": "March", "title": "Holi Festival", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
-                {"date": "2026-03-19", "year": 2026, "month": "March", "title": "Ugadi / Gudi Padwa", "category": "🟡 Restricted Holiday", "badge_color": "#f59e0b"},
-                # April 2026
-                {"date": "2026-04-03", "year": 2026, "month": "April", "title": "Good Friday", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
-                # June 2026 (Semester Break)
-                {"date": "2026-06-01 to 2026-06-15", "year": 2026, "month": "June", "title": "Summer Semester In-Between Break", "category": "🏖️ Semester Break", "badge_color": "#10b981"},
-                # August 2026
-                {"date": "2026-08-15", "year": 2026, "month": "August", "title": "Independence Day", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
-                {"date": "2026-08-21", "year": 2026, "month": "August", "title": "Varalakshmi Vratha", "category": "🟡 Restricted Holiday", "badge_color": "#f59e0b"},
-                # September 2026
-                {"date": "2026-09-14", "year": 2026, "month": "September", "title": "Ganesh Chaturthi", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
-                {"date": "2026-09-22 to 2026-09-26", "year": 2026, "month": "September", "title": "Mid-Term Continuous Assessments (CA-1)", "category": "📝 Examination Window", "badge_color": "#6366f1"},
-                # October 2026
-                {"date": "2026-10-02", "year": 2026, "month": "October", "title": "Gandhi Jayanthi", "category": "🔴 National Holiday", "badge_color": "#ef4444"},
-                {"date": "2026-10-05", "year": 2026, "month": "October", "title": "PragyanAI Annual Deep-Tech Hackathon", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
-                {"date": "2026-10-12 to 2026-10-17", "year": 2026, "month": "October", "title": "Practical & Lab Viva Examinations", "category": "📝 Examination Window", "badge_color": "#6366f1"},
-                {"date": "2026-10-18", "year": 2026, "month": "October", "title": "IEEE International Conference on VLSI & AI", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
-                {"date": "2026-10-20", "year": 2026, "month": "October", "title": "Vijayadashami (Dasara)", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
-                # November 2026
-                {"date": "2026-11-08", "year": 2026, "month": "November", "title": "Deepavali Festival", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"},
-                {"date": "2026-11-12", "year": 2026, "month": "November", "title": "Inter-Collegiate Cultural Fest 'Vanya 2026'", "category": "🎓 Institutional Event", "badge_color": "#8b5cf6"},
-                {"date": "2026-11-23 to 2026-12-10", "year": 2026, "month": "November", "title": "End-Semester Terminal Examinations", "category": "📝 Examination Window", "badge_color": "#6366f1"},
-                # December 2026
-                {"date": "2026-12-11 to 2026-12-31", "year": 2026, "month": "December", "title": "Winter Semester Between Break", "category": "🏖️ Semester Break", "badge_color": "#10b981"},
-                {"date": "2026-12-25", "year": 2026, "month": "December", "title": "Christmas Day", "category": "🔵 Gazetted Holiday", "badge_color": "#3b82f6"}
-            ]
-        return st.session_state.holiday_calendar_db
-    @staticmethod
-    def get_holiday_calendar():
-        """Retrieves the official institutional holiday calendar from database, seeding defaults if empty."""
-        PragyanDatabase.initialize_database()
-        if "holiday_calendar_db" not in st.session_state:
-            st.session_state.holiday_calendar_db = [
-                {"Year": "2026", "Month": "January", "Holiday Name": "Republic Day", "Date": "2026-01-26", "Type": "🔴 National Holiday"},
-                {"Year": "2026", "Month": "March", "Holiday Name": "Holi", "Date": "2026-03-04", "Type": "🔵 Gazetted Holiday"},
-                {"Year": "2026", "Month": "March", "Holiday Name": "Ugadi / Gudi Padwa", "Date": "2026-03-19", "Type": "🟡 Restricted Holiday"},
-                {"Year": "2026", "Month": "April", "Holiday Name": "Good Friday", "Date": "2026-04-03", "Type": "🔵 Gazetted Holiday"},
-                {"Year": "2026", "Month": "August", "Holiday Name": "Independence Day", "Date": "2026-08-15", "Type": "🔴 National Holiday"},
-                {"Year": "2026", "Month": "August", "Holiday Name": "Varalakshmi Vratha", "Date": "2026-08-21", "Type": "🟡 Restricted Holiday"},
-                {"Year": "2026", "Month": "September", "Holiday Name": "Ganesh Chaturthi", "Date": "2026-09-14", "Type": "🔵 Gazetted Holiday"},
-                {"Year": "2026", "Month": "October", "Holiday Name": "Gandhi Jayanthi", "Date": "2026-10-02", "Type": "🔴 National Holiday"},
-                {"Year": "2026", "Month": "October", "Holiday Name": "Vijayadashami (Dasara)", "Date": "2026-10-20", "Type": "🔵 Gazetted Holiday"},
-                {"Year": "2026", "Month": "November", "Holiday Name": "Deepavali", "Date": "2026-11-08", "Type": "🔵 Gazetted Holiday"},
-                {"Year": "2026", "Month": "December", "Holiday Name": "Christmas Day", "Date": "2026-12-25", "Type": "🔵 Gazetted Holiday"}
-            ]
         return st.session_state.holiday_calendar_db
