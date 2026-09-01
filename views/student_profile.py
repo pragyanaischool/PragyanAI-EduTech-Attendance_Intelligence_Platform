@@ -11,14 +11,14 @@ def render_student_profile():
     
     user_name = st.session_state.get("user_name", "Sateesh Ambesange")
     
-    st.markdown(f"##  Student Profile & Academic Passport — {user_name}")
+    st.markdown(f"## 🎒 Student Profile & Academic Passport — {user_name}")
     st.markdown(
         f"Manage your student identity, institutional contact details, academic goals, "
         f"and attendance alert subscriptions."
     )
     
     st.info(
-        " **Student Portal Security:** Changes made here update your official student ledger "
+        "💡 **Student Portal Security:** Changes made here update your official student ledger "
         "and synchronize automatically with Department HOD and Faculty advisory dashboards."
     )
 
@@ -26,7 +26,7 @@ def render_student_profile():
 
     # 2. Student Profile Edit Form
     with st.form("student_profile_management_form"):
-        st.markdown("###  Personal & Academic Credentials")
+        st.markdown("### 📋 Personal & Academic Credentials")
         
         c1, c2 = st.columns(2)
         
