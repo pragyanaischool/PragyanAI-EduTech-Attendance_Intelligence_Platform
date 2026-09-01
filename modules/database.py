@@ -3,8 +3,8 @@ import streamlit as st
 class PragyanDatabase:
     """
     Core Database & Session State Management for PragyanAI Institutional Platform.
-    Handles persistent storage for students, faculty portfolios, department rosters, 
-    semester course allocations, leave records, and adhoc duties.
+    Handles persistent storage for students with multi-subject attendance tracking, 
+    faculty portfolios, department rosters, semester course allocations, leave records, and adhoc duties.
     """
 
     @staticmethod
@@ -13,22 +13,86 @@ class PragyanDatabase:
         if "db_initialized" in st.session_state and st.session_state.db_initialized:
             return
 
-        # 1. Students Database
+        # 1. Students Database (Enhanced with Multi-Subject Tracking & Standardized Semesters)
         if "students_db" not in st.session_state:
             st.session_state.students_db = [
-                {"roll": "ECE_2026_042", "name": "Sateesh Ambesange", "department": "Electronics & Communication (ECE)", "semester": "Sem 5", "attendance_percentage": 91.5, "exam_eligibility_status": "🟢 Safe"},
-                {"roll": "ECE_2026_010", "name": "Aarav Sharma", "department": "Electronics & Communication (ECE)", "semester": "Sem 5", "attendance_percentage": 88.2, "exam_eligibility_status": "🟢 Safe"},
-                {"roll": "ECE_2026_088", "name": "Priya Patel", "department": "Electronics & Communication (ECE)", "semester": "Sem 5", "attendance_percentage": 72.0, "exam_eligibility_status": "🟡 At-Risk (<75%)"},
-                {"roll": "ECE_2026_102", "name": "Rohan Verma", "department": "Electronics & Communication (ECE)", "semester": "Sem 3", "attendance_percentage": 84.5, "exam_eligibility_status": "🟢 Safe"},
-                {"roll": "ECE_2026_115", "name": "Ananya Iyer", "department": "Electronics & Communication (ECE)", "semester": "Sem 7", "attendance_percentage": 68.0, "exam_eligibility_status": "🔴 Shortage Risk"}
+                {
+                    "roll": "ECE_2026_042", 
+                    "name": "Sateesh Ambesange", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 5", 
+                    "attendance_percentage": 91.5, 
+                    "exam_eligibility_status": "🟢 Safe",
+                    "subjects": {
+                        "ECE501 - VLSI Architecture": {"held": 38, "attended": 36, "pct": 94.7, "status": "🟢 Safe"},
+                        "ECE502 - Microcontrollers": {"held": 40, "attended": 37, "pct": 92.5, "status": "🟢 Safe"},
+                        "ECE503 - Digital Signal Processing": {"held": 35, "attended": 31, "pct": 88.5, "status": "🟢 Safe"},
+                        "ECE504 - Control Systems": {"held": 32, "attended": 29, "pct": 90.6, "status": "🟢 Safe"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_010", 
+                    "name": "Aarav Sharma", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 5", 
+                    "attendance_percentage": 88.2, 
+                    "exam_eligibility_status": "🟢 Safe",
+                    "subjects": {
+                        "ECE501 - VLSI Architecture": {"held": 38, "attended": 34, "pct": 89.4, "status": "🟢 Safe"},
+                        "ECE502 - Microcontrollers": {"held": 40, "attended": 35, "pct": 87.5, "status": "🟢 Safe"},
+                        "ECE503 - Digital Signal Processing": {"held": 35, "attended": 30, "pct": 85.7, "status": "🟢 Safe"},
+                        "ECE504 - Control Systems": {"held": 32, "attended": 28, "pct": 87.5, "status": "🟢 Safe"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_088", 
+                    "name": "Priya Patel", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 5", 
+                    "attendance_percentage": 72.0, 
+                    "exam_eligibility_status": "🟡 At-Risk (<75%)",
+                    "subjects": {
+                        "ECE501 - VLSI Architecture": {"held": 38, "attended": 29, "pct": 76.3, "status": "🟡 Warning"},
+                        "ECE502 - Microcontrollers": {"held": 40, "attended": 28, "pct": 70.0, "status": "🔴 Shortage Risk"},
+                        "ECE503 - Digital Signal Processing": {"held": 35, "attended": 25, "pct": 71.4, "status": "🔴 Shortage Risk"},
+                        "ECE504 - Control Systems": {"held": 32, "attended": 23, "pct": 71.8, "status": "🔴 Shortage Risk"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_102", 
+                    "name": "Rohan Verma", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 3", 
+                    "attendance_percentage": 84.5, 
+                    "exam_eligibility_status": "🟢 Safe",
+                    "subjects": {
+                        "ECE301 - Digital Logic Design": {"held": 36, "attended": 31, "pct": 86.1, "status": "🟢 Safe"},
+                        "ECE302 - Signals & Systems": {"held": 34, "attended": 29, "pct": 85.2, "status": "🟢 Safe"},
+                        "ECE303 - Network Theory": {"held": 32, "attended": 26, "pct": 81.2, "status": "🟢 Safe"},
+                        "ECE304 - Electronic Devices": {"held": 30, "attended": 26, "pct": 86.6, "status": "🟢 Safe"}
+                    }
+                },
+                {
+                    "roll": "ECE_2026_115", 
+                    "name": "Ananya Iyer", 
+                    "department": "Electronics & Communication (ECE)", 
+                    "semester": "Semester 7", 
+                    "attendance_percentage": 68.0, 
+                    "exam_eligibility_status": "🔴 Shortage Risk",
+                    "subjects": {
+                        "ECE701 - Wireless Communications": {"held": 30, "attended": 21, "pct": 70.0, "status": "🔴 Shortage Risk"},
+                        "ECE702 - AI in EDA": {"held": 28, "attended": 18, "pct": 64.2, "status": "🔴 Shortage Risk"},
+                        "ECE703 - RF Circuit Design": {"held": 32, "attended": 23, "pct": 71.8, "status": "🔴 Shortage Risk"}
+                    }
+                }
             ]
 
         # 2. Faculty Allocations Database
         if "faculty_allocations_db" not in st.session_state:
             st.session_state.faculty_allocations_db = [
-                {"faculty": "Dr. Smitha Rao", "subject": "ECE301 - Digital Logic Design", "semester": "Sem 5", "enrolled": 48},
-                {"faculty": "Dr. Smitha Rao", "subject": "ECE302 - VLSI Architecture", "semester": "Sem 5", "enrolled": 52},
-                {"faculty": "Dr. Anand Kumar", "subject": "ECE303 - Signals & Systems", "semester": "Sem 3", "enrolled": 48}
+                {"faculty": "Dr. Smitha Rao", "subject": "ECE301 - Digital Logic Design", "semester": "Semester 3", "enrolled": 48},
+                {"faculty": "Dr. Smitha Rao", "subject": "ECE501 - VLSI Architecture", "semester": "Semester 5", "enrolled": 52},
+                {"faculty": "Dr. Anand Kumar", "subject": "ECE303 - Signals & Systems", "semester": "Semester 3", "enrolled": 48}
             ]
 
         # 3. HOD Governance Records
@@ -130,6 +194,7 @@ class PragyanDatabase:
     def assign_adhoc_class(adhoc_data):
         PragyanDatabase.initialize_database()
         st.session_state.adhoc_classes_db.insert(0, adhoc_data)
+
     @staticmethod
     def get_holiday_calendar():
         """Retrieves the official institutional holiday calendar from database, seeding defaults if empty."""
