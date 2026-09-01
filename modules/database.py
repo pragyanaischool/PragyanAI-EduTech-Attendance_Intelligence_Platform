@@ -1,116 +1,132 @@
 import streamlit as st
-import json
-import os
 
 class PragyanDatabase:
     """
-    Central database controller managing role-specific tables, JSON file loading from data/,
-    fallback dummy data, and persistence for students, faculty subject allocations,
-    HOD records, and QR code session ledgers.
+    Core Database & Session State Management for PragyanAI Institutional Platform.
+    Handles persistent storage for students, faculty portfolios, department rosters, 
+    semester course allocations, leave records, and adhoc duties.
     """
-    
-    @staticmethod
-    def _load_json_file(file_path: str, default_data: list) -> list:
-        """Helper to safely load a JSON sample data file or return default fallback data."""
-        try:
-            if os.path.exists(file_path):
-                with open(file_path, "r", encoding="utf-8") as f:
-                    content = json.load(f)
-                    # Extract specific table lists based on keys
-                    if "students" in content:
-                        return content["students"]
-                    elif "faculty_members" in content:
-                        return content["faculty_members"]
-                    elif "hod_records" in content:
-                        return content["hod_records"]
-                    elif "guardian_profiles" in content:
-                        return content["guardian_profiles"]
-                    elif isinstance(content, list):
-                        return content
-        except Exception:
-            pass
-        return default_data
 
     @staticmethod
     def initialize_database():
-        """Initializes all database tables in Streamlit session state from JSON files or fallbacks."""
-        
-        # 1. Students Table
-        if "db_students" not in st.session_state:
-            default_students = [
-                {"roll": "ECE_2026_01", "name": "Aarav Sharma", "department": "Electronics & Communication", "semester": "Sem 5", "email": "aarav.sharma@pragyan.edu", "attendance_percentage": 92.0, "exam_eligibility_status": "🟢 Optimal (Safe)"},
-                {"roll": "ECE_2026_02", "name": "Priya Patel", "department": "Electronics & Communication", "semester": "Sem 5", "email": "priya.patel@pragyan.edu", "attendance_percentage": 84.0, "exam_eligibility_status": "🟢 Good"},
-                {"roll": "ECE_2026_042", "name": "Sateesh Ambesange", "department": "Electronics & Communication", "semester": "Sem 5", "email": "sateesh.ambesange@pragyan.edu", "attendance_percentage": 84.7, "exam_eligibility_status": "🟢 Safe (>75% Cutoff)"}
-            ]
-            st.session_state.db_students = PragyanDatabase._load_json_file("data/student_sample_data.json", default_students)
+        """Initializes default database tables in st.session_state if not already present."""
+        if "db_initialized" in st.session_state and st.session_state.db_initialized:
+            return
 
-        # 2. Faculty Allocations Table
-        if "db_faculty_allocations" not in st.session_state:
-            default_faculty = [
-                {"employee_id": "FAC_ECE_101", "faculty_name": "Dr. Smitha Rao", "department": "Electronics & Communication (ECE)", "subject": "ECE301 - Digital Logic Design", "semester": "Sem 5", "cabin_location": "Block B, Room 304", "availability_status": "🟢 Available in Cabin"},
-                {"employee_id": "FAC_ECE_101", "faculty_name": "Dr. Smitha Rao", "department": "Electronics & Communication (ECE)", "subject": "ECE402 - VLSI Architecture", "semester": "Sem 7", "cabin_location": "Block B, Room 304", "availability_status": "🟢 Available in Cabin"},
-                {"employee_id": "FAC_ECE_102", "faculty_name": "Prof. Anand Kumar", "department": "Electronics & Communication (ECE)", "subject": "ECE302 - Signals & Systems", "semester": "Sem 5", "cabin_location": "Block B, Room 210", "availability_status": "🔴 On Leave"},
-                {"employee_id": "FAC_ECE_103", "faculty_name": "Dr. Rajeshwari", "department": "Electronics & Communication (ECE)", "subject": "ECE305 - Microcontrollers", "semester": "Sem 5", "cabin_location": "Block C, Room 115", "availability_status": "🟢 Available in Lab"}
-            ]
-            raw_faculty_json = PragyanDatabase._load_json_file("data/faculty_sample_data.json", [])
-            # Flatten faculty objects with allocated subjects for easy table viewing
-            flattened_allocations = []
-            if raw_faculty_json and isinstance(raw_faculty_json, list):
-                for fac in raw_faculty_json:
-                    fac_name = fac.get("faculty_name", "Unknown Faculty")
-                    emp_id = fac.get("employee_id", "FAC_00")
-                    dept = fac.get("department", "ECE")
-                    cabin = fac.get("cabin_location", "Block B")
-                    status = fac.get("availability_status", "Available")
-                    for subj in fac.get("allocated_subjects", []):
-                        flattened_allocations.append({
-                            "employee_id": emp_id,
-                            "faculty_name": fac_name,
-                            "department": dept,
-                            "subject": f"{subj.get('subject_code')} - {subj.get('subject_name')}",
-                            "semester": subj.get("semester", "Sem 5"),
-                            "cabin_location": cabin,
-                            "availability_status": status
-                        })
-            st.session_state.db_faculty_allocations = flattened_allocations if flattened_allocations else default_faculty
-
-        # 3. HOD Records Table
-        if "db_hod_records" not in st.session_state:
-            default_hod = [
-                {"employee_id": "HOD_ECE_2026_01", "hod_name": "Dr. HOD (ECE)", "department": "Electronics & Communication Engineering (ECE)", "deanery_office": "Block A, Room 102", "availability_status": "🟢 Available in Deanery"}
-            ]
-            st.session_state.db_hod_records = PragyanDatabase._load_json_file("data/hod_sample_data.json", default_hod)
-
-        # 4. QR Session Database Ledger
-        if "qr_session_database" not in st.session_state:
-            st.session_state.qr_session_database = [
-                {"date": "2026-09-01", "dept": "Electronics & Communication (ECE)", "semester": "Sem 5", "subject": "ECE301 - Digital Logic Design", "file_link": "qr_sessions/ece301_2026_09_01.png", "scans": 44},
-                {"date": "2026-09-01", "dept": "Electronics & Communication (ECE)", "semester": "Sem 7", "subject": "ECE402 - VLSI Architecture", "file_link": "qr_sessions/ece402_2026_09_01.png", "scans": 46}
+        # 1. Students Database
+        if "students_db" not in st.session_state:
+            st.session_state.students_db = [
+                {"roll": "ECE_2026_042", "name": "Sateesh Ambesange", "department": "Electronics & Communication (ECE)", "semester": "Sem 5", "attendance_percentage": 91.5, "exam_eligibility_status": "🟢 Safe"},
+                {"roll": "ECE_2026_010", "name": "Aarav Sharma", "department": "Electronics & Communication (ECE)", "semester": "Sem 5", "attendance_percentage": 88.2, "exam_eligibility_status": "🟢 Safe"},
+                {"roll": "ECE_2026_088", "name": "Priya Patel", "department": "Electronics & Communication (ECE)", "semester": "Sem 5", "attendance_percentage": 72.0, "exam_eligibility_status": "🟡 At-Risk (<75%)"},
+                {"roll": "ECE_2026_102", "name": "Rohan Verma", "department": "Electronics & Communication (ECE)", "semester": "Sem 3", "attendance_percentage": 84.5, "exam_eligibility_status": "🟢 Safe"},
+                {"roll": "ECE_2026_115", "name": "Ananya Iyer", "department": "Electronics & Communication (ECE)", "semester": "Sem 7", "attendance_percentage": 68.0, "exam_eligibility_status": "🔴 Shortage Risk"}
             ]
 
+        # 2. Faculty Allocations Database
+        if "faculty_allocations_db" not in st.session_state:
+            st.session_state.faculty_allocations_db = [
+                {"faculty": "Dr. Smitha Rao", "subject": "ECE301 - Digital Logic Design", "semester": "Sem 5", "enrolled": 48},
+                {"faculty": "Dr. Smitha Rao", "subject": "ECE302 - VLSI Architecture", "semester": "Sem 5", "enrolled": 52},
+                {"faculty": "Dr. Anand Kumar", "subject": "ECE303 - Signals & Systems", "semester": "Sem 3", "enrolled": 48}
+            ]
+
+        # 3. HOD Governance Records
+        if "hod_records_db" not in st.session_state:
+            st.session_state.hod_records_db = [
+                {
+                    "hod_name": "Dr. HOD (ECE)",
+                    "department": "Electronics & Communication (ECE)",
+                    "college": "PragyanAI Institute of Technology & Venture Studio",
+                    "availability_status": "Available in Office Block A",
+                    "active_policy": "Strict 75% Shortage Threshold & Mandatory Medical Exemption Filings"
+                }
+            ]
+
+        # 4. Department Faculty Roster (Joined Date, Role, Active Courses)
+        if "department_faculty_db" not in st.session_state:
+            st.session_state.department_faculty_db = [
+                {"faculty_name": "Dr. Smitha Rao", "role": "Professor & Senior Researcher", "joined_date": "2018-06-15", "active_courses": "ECE301, ECE302", "status": "🟢 Active"},
+                {"faculty_name": "Dr. Anand Kumar", "role": "Associate Professor", "joined_date": "2020-07-01", "active_courses": "ECE303, ECE401", "status": "🟢 Active"},
+                {"faculty_name": "Prof. Meena Hegde", "role": "Assistant Professor", "joined_date": "2021-08-10", "active_courses": "ECE304, ECE305", "status": "🟢 Active"},
+                {"faculty_name": "Dr. Rajesh Sharma", "role": "Senior Lecturer", "joined_date": "2022-01-15", "active_courses": "ECE201, ECE202", "status": "🟢 Active"},
+                {"faculty_name": "Prof. Sneha Patil", "role": "Assistant Professor", "joined_date": "2023-07-20", "active_courses": "ECE203, ECE306", "status": "🟡 On Sabbatical"}
+            ]
+
+        # 5. Semester Course Allocations
+        if "course_allocations_db" not in st.session_state:
+            st.session_state.course_allocations_db = [
+                {"course_code": "ECE301", "subject_name": "Digital Logic Design", "semester": "Semester 3", "faculty_in_charge": "Dr. Smitha Rao", "enrolled": 48},
+                {"course_code": "ECE302", "subject_name": "Signals & Systems", "semester": "Semester 3", "faculty_in_charge": "Dr. Anand Kumar", "enrolled": 48},
+                {"course_code": "ECE501", "subject_name": "VLSI Architecture", "semester": "Semester 5", "faculty_in_charge": "Dr. Smitha Rao", "enrolled": 52},
+                {"course_code": "ECE502", "subject_name": "Microcontrollers & Embedded Systems", "semester": "Semester 5", "faculty_in_charge": "Prof. Meena Hegde", "enrolled": 52}
+            ]
+
+        # 6. Adhoc Class Allocations
+        if "adhoc_classes_db" not in st.session_state:
+            st.session_state.adhoc_classes_db = [
+                {"faculty": "Dr. Smitha Rao", "topic": "ECE301 - Digital Logic Design (Makeup Lecture)", "date": "2026-09-03", "slot": "11:30 AM - 12:30 PM", "venue": "Lecture Hall 102"}
+            ]
+
+        st.session_state.db_initialized = True
+
+    # --- Student Database Accessors ---
     @staticmethod
     def get_students():
         PragyanDatabase.initialize_database()
-        return st.session_state.db_students
+        return st.session_state.students_db
 
     @staticmethod
-    def add_student(student_data: dict):
+    def add_student(student_data):
         PragyanDatabase.initialize_database()
-        st.session_state.db_students.append(student_data)
+        st.session_state.students_db.insert(0, student_data)
+
+    # --- Faculty Allocation Accessors ---
+    @staticmethod
+    def get_faculty_allocations():
+        PragyanDatabase.initialize_database()
+        return st.session_state.faculty_allocations_db
 
     @staticmethod
-    def get_faculty_allocations(faculty_name=None):
+    def add_faculty_allocation(allocation_data):
         PragyanDatabase.initialize_database()
-        if faculty_name:
-            return [f for f in st.session_state.db_faculty_allocations if faculty_name.lower() in f.get("faculty_name", "").lower()]
-        return st.session_state.db_faculty_allocations
+        st.session_state.faculty_allocations_db.insert(0, allocation_data)
 
-    @staticmethod
-    def add_faculty_allocation(allocation_data: dict):
-        PragyanDatabase.initialize_database()
-        st.session_state.db_faculty_allocations.append(allocation_data)
-
+    # --- HOD Record Accessors ---
     @staticmethod
     def get_hod_records():
         PragyanDatabase.initialize_database()
-        return st.session_state.db_hod_records
+        return st.session_state.hod_records_db
+
+    # --- Department Faculty Roster Accessors & CRUD ---
+    @staticmethod
+    def get_department_faculty():
+        PragyanDatabase.initialize_database()
+        return st.session_state.department_faculty_db
+
+    @staticmethod
+    def add_department_faculty(faculty_data):
+        PragyanDatabase.initialize_database()
+        st.session_state.department_faculty_db.insert(0, faculty_data)
+
+    # --- Semester Course Allocation Accessors & CRUD ---
+    @staticmethod
+    def get_course_allocations():
+        PragyanDatabase.initialize_database()
+        return st.session_state.course_allocations_db
+
+    @staticmethod
+    def assign_course(allocation_data):
+        PragyanDatabase.initialize_database()
+        st.session_state.course_allocations_db.insert(0, allocation_data)
+
+    # --- Adhoc Class Allocation Accessors & CRUD ---
+    @staticmethod
+    def get_adhoc_classes():
+        PragyanDatabase.initialize_database()
+        return st.session_state.adhoc_classes_db
+
+    @staticmethod
+    def assign_adhoc_class(adhoc_data):
+        PragyanDatabase.initialize_database()
+        st.session_state.adhoc_classes_db.insert(0, adhoc_data)
