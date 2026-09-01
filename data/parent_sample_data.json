@@ -1,0 +1,29 @@
+{
+  "institutional_metadata": {
+    "institution": "PragyanAI University & Research Studio",
+    "academic_term": "Fall Semester 2026",
+    "last_updated": "2026-09-01"
+  },
+  "guardian_profiles": [
+    {
+      "guardian_id": "PRN_2026_042",
+      "guardian_name": "Mr. Ambesange",
+      "relationship": "Father / Guardian",
+      "email": "parent.ambesange@gmail.com",
+      "contact_phone": "+91 98765 43210",
+      "linked_ward": {
+        "ward_name": "Sateesh Ambesange",
+        "roll_number": "ECE_2026_042",
+        "department": "Electronics & Communication (ECE)",
+        "semester": "Sem 5",
+        "current_attendance": "84.7%",
+        "exam_eligibility": "🟢 Safe (>75% Cutoff)"
+      },
+      "notification_subscriptions": {
+        "daily_sms_digest": true,
+        "whatsapp_shortage_warnings": true,
+        "monthly_counseling_notes": true
+      }
+    }
+  ]
+}
