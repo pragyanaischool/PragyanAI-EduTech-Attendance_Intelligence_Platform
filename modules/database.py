@@ -1,10 +1,12 @@
 import streamlit as st
+import datetime
 
 class PragyanDatabase:
     """
     Core Database & Session State Management for PragyanAI Institutional Platform.
     Handles persistent storage for students with comprehensive multi-subject attendance tracking, 
-    faculty portfolios, department rosters, semester course allocations, leave records, and adhoc duties.
+    faculty portfolios, department rosters, semester course allocations, leave records, adhoc duties,
+    and principal executive profiles.
     """
 
     @staticmethod
@@ -206,6 +208,27 @@ class PragyanDatabase:
                 {"faculty": "Dr. Smitha Rao", "topic": "ECE301 - Digital Logic Design (Makeup Lecture)", "date": "2026-09-03", "slot": "11:30 AM - 12:30 PM", "venue": "Lecture Hall 102"}
             ]
 
+        # 7. Principal Executive Profile Database
+        if "principal_executive_profile_db" not in st.session_state:
+            st.session_state.principal_executive_profile_db = {
+                "full_name": "Dr. Principal Dean",
+                "email": "principal@pragyan.edu",
+                "employee_id": "EXEC_PRINCIPAL_2026_01",
+                "admin_office": "Main Block - Executive Deanery & Council",
+                "office_location": "Block A, Suite 101 (Central Administration)",
+                "office_hours": "Mon, Wed, Fri: 11:00 AM - 2:00 PM",
+                "position_start_date": datetime.date(2022, 7, 15),
+                "resume_link": "https://pragyanai.edu/resumes/principal_cv.pdf",
+                "linkedin_link": "https://linkedin.com/in/principal-dean-pragyanai",
+                "research_profile": "https://scholar.google.com/citations?user=principal_sample",
+                "keen_interests": "Agentic AI in Higher Education Governance, Automated EDA Verification, Institutional Scalability Models",
+                "bio": "Principal & Chief Academic Officer. Directing institutional digital transformation, attendance intelligence compliance, and multi-department student success frameworks.",
+                "digest_alerts": True,
+                "sms_alerts": True,
+                "broadcast_privilege": True,
+                "pdf_logging": True
+            }
+
         st.session_state.db_initialized = True
 
     # --- Student Database Accessors ---
@@ -268,6 +291,20 @@ class PragyanDatabase:
     def assign_adhoc_class(adhoc_data):
         PragyanDatabase.initialize_database()
         st.session_state.adhoc_classes_db.insert(0, adhoc_data)
+
+    # --- Principal Profile Database Accessors & Persistence ---
+    @staticmethod
+    def get_principal_profile():
+        """Retrieves the principal's executive profile from session state, seeding defaults if empty."""
+        PragyanDatabase.initialize_database()
+        return st.session_state.principal_executive_profile_db
+
+    @staticmethod
+    def save_principal_profile(profile_data):
+        """Saves and updates the principal's executive profile in session state database."""
+        PragyanDatabase.initialize_database()
+        st.session_state.principal_executive_profile_db = profile_data
+        st.session_state["user_name"] = profile_data.get("full_name", "Dr. Principal Dean")
 
     @staticmethod
     def get_holiday_calendar():
