@@ -331,7 +331,7 @@ def render_faculty_reports():
         with da2:
             st.markdown("#### 📝 Faculty & Substitute Leave Audit")
             faculty_leaves = st.session_state.get("faculty_leave_requests", [])
-            matched_f_leaves = [l for l in faculty_leaves if l.get("faculty") == params['faculty']] if faculty_leaves else []
+            matched_f_leaves = [l for l in faculty_leaves if l.get("faculty"] == params['faculty']] if faculty_leaves else []
             
             if matched_f_leaves:
                 for ml in matched_f_leaves:
@@ -380,7 +380,9 @@ def render_faculty_reports():
         if show_preview:
             st.markdown("### 🔍 Institutional PDF Live Document Viewer")
             base64_pdf = base64.b64encode(st.session_state.cached_pdf_bytes).decode('utf-8')
-            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="700px" type="application/pdf"></iframe>'
+            
+            # --- FIXED PDF DISPLAY WRAPPER ---
+            pdf_display = f'<div style="border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;"><iframe src="data:application/pdf;base64,{base64_pdf}#toolbar=1&view=FitH" width="100%" height="750px" style="border: none;"></iframe></div>'
             st.markdown(pdf_display, unsafe_allow_html=True)
     else:
         st.info("👆 Configure your parameters above and click **Generate Comprehensive Attendance Ledger & Report** to initialize your studio.")
