@@ -1,0 +1,70 @@
+{
+  "institutional_metadata": {
+    "institution": "PragyanAI University & Research Studio",
+    "department": "Electronics & Communication Engineering (ECE)",
+    "academic_term": "Fall Semester 2026",
+    "last_updated": "2026-09-01"
+  },
+  "students": [
+    {
+      "roll": "ECE_2026_01",
+      "name": "Aarav Sharma",
+      "department": "Electronics & Communication",
+      "semester": "Sem 5",
+      "email": "aarav.sharma@pragyan.edu",
+      "contact_phone": "+91 98765 11101",
+      "attendance_percentage": 92.0,
+      "exam_eligibility_status": "🟢 Optimal (Safe)",
+      "guardian_name": "Mr. Rajesh Sharma",
+      "guardian_contact": "+91 98765 11199"
+    },
+    {
+      "roll": "ECE_2026_02",
+      "name": "Priya Patel",
+      "department": "Electronics & Communication",
+      "semester": "Sem 5",
+      "email": "priya.patel@pragyan.edu",
+      "contact_phone": "+91 98765 22202",
+      "attendance_percentage": 84.0,
+      "exam_eligibility_status": "🟢 Good",
+      "guardian_name": "Mrs. Sunita Patel",
+      "guardian_contact": "+91 98765 22299"
+    },
+    {
+      "roll": "ECE_2026_03",
+      "name": "Rohan Verma",
+      "department": "Electronics & Communication",
+      "semester": "Sem 5",
+      "email": "rohan.verma@pragyan.edu",
+      "contact_phone": "+91 98765 33303",
+      "attendance_percentage": 68.0,
+      "exam_eligibility_status": "🔴 At-Risk (Shortage Warning)",
+      "guardian_name": "Mr. Vikram Verma",
+      "guardian_contact": "+91 98765 33399"
+    },
+    {
+      "roll": "ECE_2026_042",
+      "name": "Sateesh Ambesange",
+      "department": "Electronics & Communication",
+      "semester": "Sem 5",
+      "email": "sateesh.ambesange@pragyan.edu",
+      "contact_phone": "+91 98765 43210",
+      "attendance_percentage": 84.7,
+      "exam_eligibility_status": "🟢 Safe (>75% Cutoff)",
+      "guardian_name": "Mr. Ambesange",
+      "guardian_contact": "+91 98765 43211"
+    },
+    {
+      "roll": "ECE_2026_05",
+      "name": "Sneha Rao",
+      "department": "Electronics & Communication",
+      "semester": "Sem 5",
+      "email": "sneha.rao@pragyan.edu",
+      "contact_phone": "+91 98765 55505",
+      "attendance_percentage": 96.0,
+      "exam_eligibility_status": "🟢 Optimal (Excellent)",
+      "guardian_name": "Dr. Raghavendra Rao",
+      "guardian_contact": "+91 98765 55599"
+    }
+  ]
+}
