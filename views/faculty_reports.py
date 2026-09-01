@@ -61,7 +61,6 @@ def generate_pdf_ledger_bytes(subject_name, faculty_name, semester, dept, colleg
     story.append(Paragraph("<b>OFFICIAL INSTITUTIONAL ATTENDANCE INTELLIGENCE LEDGER</b>", subtitle_style))
     story.append(Spacer(1, 45))
     
-    # Metadata Table on Cover
     cover_meta = [
         ["Subject Name:", subject_name],
         ["Faculty In-Charge:", faculty_name],
@@ -97,11 +96,10 @@ def generate_pdf_ledger_bytes(subject_name, faculty_name, semester, dept, colleg
         story.append(Paragraph(f"<b>Subject:</b> {subject_name} | <b>Faculty:</b> {faculty_name} | <b>Dept:</b> {dept}", subtitle_style))
         story.append(Spacer(1, 15))
 
-        # Build Table Headers
         headers = ["Roll No", "Student Name"] + days + ["Total Days", "Attended", "Monthly %"]
         month_table_data = [headers]
 
-        for idx, s in enumerate(students_data[:30]): # Sample top 30 for PDF readability
+        for idx, s in enumerate(students_data[:30]):
             roll = s.get("roll", f"ECE_2026_{idx+1:03d}")
             name = s.get("name", f"Student {idx+1}")
             att_pct = s.get("attendance_percentage", 80.0)
@@ -178,9 +176,8 @@ def generate_pdf_ledger_bytes(subject_name, faculty_name, semester, dept, colleg
 
 def render_faculty_reports():
     """
-    Renders the Faculty Attendance Ledger & Executive Report Generation Hub.
-    Allows faculty members to generate day-wise attendance ledgers for all students across a specified date range,
-    incorporating subject name, semester, department, faculty name, deep analytics, and PDF download/view options.
+    Renders the Faculty Attendance Ledger & Executive Report Generation Hub with persistent state,
+    live PDF viewer, and CSV/PDF download capabilities.
     """
     # 1. Safe Brand Watermark Logo Integration
     render_brand_logo(width=220, is_sidebar=False)
@@ -198,7 +195,19 @@ def render_faculty_reports():
 
     st.markdown("---")
 
-    # 2. Report Configuration Form
+    # 2. Initialize Report Parameters in Session State
+    if "report_params" not in st.session_state:
+        st.session_state.report_params = {
+            "subject": "ECE301 - Digital Logic Design",
+            "dept": "Electronics & Communication (ECE)",
+            "semester": "Sem 5",
+            "faculty": user_name,
+            "college": "PragyanAI Institute of Technology & Venture Studio",
+            "start_date": datetime.date(2026, 9, 1),
+            "end_date": datetime.date(2026, 9, 7)
+        }
+
+    # 3. Report Configuration Form
     with st.form("faculty_report_generation_form"):
         st.markdown("### ⚙️ Report Parameters & Subject Configuration")
         
@@ -206,27 +215,47 @@ def render_faculty_reports():
         with rc1:
             report_subject = st.selectbox(
                 "Select Subject / Course", 
-                ["ECE301 - Digital Logic Design", "ECE302 - VLSI Architecture", "ECE303 - Signals & Systems", "ECE304 - Microcontrollers"]
+                ["ECE301 - Digital Logic Design", "ECE302 - VLSI Architecture", "ECE303 - Signals & Systems", "ECE304 - Microcontrollers"],
+                index=0
             )
-            report_dept = st.text_input("Department", value="Electronics & Communication (ECE)")
+            report_dept = st.text_input("Department", value=st.session_state.report_params["dept"])
         with rc2:
             report_semester = st.selectbox("Semester / Term", ["Sem 3", "Sem 5", "Sem 7"], index=1)
-            report_faculty = st.text_input("Faculty In-Charge", value=user_name)
+            report_faculty = st.text_input("Faculty In-Charge", value=st.session_state.report_params["faculty"])
         with rc3:
-            start_date = st.date_input("Start Date (From)", value=datetime.date(2026, 9, 1))
-            end_date = st.date_input("End Date (To)", value=datetime.date(2026, 9, 7))
+            start_date = st.date_input("Start Date (From)", value=st.session_state.report_params["start_date"])
+            end_date = st.date_input("End Date (To)", value=st.session_state.report_params["end_date"])
 
-        college_name = st.text_input("College Name", value="PragyanAI Institute of Technology & Venture Studio")
+        college_name = st.text_input("College Name", value=st.session_state.report_params["college"])
         st.markdown("---")
         
         generate_btn = st.form_submit_button("🚀 Generate Comprehensive Attendance Ledger & Report")
 
-    # Fetch student database for ledger construction
-    students_db = PragyanDatabase.get_students()
-
-    # 3. Report Generation & Display Engine
-    if generate_btn or "report_generated" in st.session_state:
+    if generate_btn:
         st.session_state.report_generated = True
+        st.session_state.report_params = {
+            "subject": report_subject,
+            "dept": report_dept,
+            "semester": report_semester,
+            "faculty": report_faculty,
+            "college": college_name,
+            "start_date": start_date,
+            "end_date": end_date
+        }
+        # Pre-generate and cache PDF bytes
+        students_db = PragyanDatabase.get_students()
+        st.session_state.cached_pdf_bytes = generate_pdf_ledger_bytes(
+            subject_name=report_subject,
+            faculty_name=report_faculty,
+            semester=report_semester,
+            dept=report_dept,
+            college_name=college_name,
+            students_data=students_db
+        )
+
+    # 4. Report Rendering & Display Engine (Persistent)
+    if st.session_state.get("report_generated", False):
+        params = st.session_state.report_params
         
         st.markdown("---")
         st.markdown("## 🏛️ PragyanAI Official Institutional Attendance Ledger")
@@ -234,36 +263,36 @@ def render_faculty_reports():
         # Report Header Metadata Box
         col_m1, col_m2 = st.columns(2)
         with col_m1:
-            st.markdown(f"**College / Institution:** {college_name}")
-            st.markdown(f"**Department:** {report_dept}")
-            st.markdown(f"**Semester / Term:** {report_semester}")
+            st.markdown(f"**College / Institution:** {params['college']}")
+            st.markdown(f"**Department:** {params['dept']}")
+            st.markdown(f"**Semester / Term:** {params['semester']}")
         with col_m2:
-            st.markdown(f"**Subject Name:** {report_subject}")
-            st.markdown(f"**Faculty In-Charge:** {report_faculty}")
-            st.markdown(f"**Reporting Period:** `{start_date}` to `{end_date}` (7-Day Ledger)")
+            st.markdown(f"**Subject Name:** {params['subject']}")
+            st.markdown(f"**Faculty In-Charge:** {params['faculty']}")
+            st.markdown(f"**Reporting Period:** `{params['start_date']}` to `{params['end_date']}` (7-Day Ledger)")
 
         st.markdown("---")
 
-        # Generate Date Range List for Columns
-        date_list = pd.date_range(start=start_date, end=end_date).strftime("%Y-%m-%d").tolist()
+        # Fetch student database for ledger construction
+        students_db = PragyanDatabase.get_students()
+        date_list = pd.date_range(start=params['start_date'], end=params['end_date']).strftime("%Y-%m-%d").tolist()
 
         # Build Exhaustive Student Ledger DataFrame
         ledger_rows = []
-        for idx, s in enumerate(students_db[:50]): # Display sample of students for ledger readability
+        for idx, s in enumerate(students_db[:50]):
             roll_id = s.get("roll", f"ECE_2026_{idx+1:03d}")
             student_name = s.get("name", f"Student {idx+1}")
-            
-            # Determine present/absent deterministically based on attendance %
             att_threshold = s.get("attendance_percentage", 80.0)
             
             row_data = {
                 "Roll No": roll_id,
-                "Student Name": student_name
+                "Student Name": student_name,
+                "Department": params['dept'],
+                "Semester": params['semester']
             }
             
             present_count = 0
             for d in date_list:
-                # Mock logic: student marked present if threshold allows, absent on weekends
                 is_weekend = datetime.datetime.strptime(d, "%Y-%m-%d").weekday() >= 5
                 if is_weekend:
                     status = "🏖️ Holiday"
@@ -280,11 +309,11 @@ def render_faculty_reports():
         ledger_df = pd.DataFrame(ledger_rows)
 
         st.markdown("### 📋 Day-Wise Student Attendance Ledger (Present / Absent Grid)")
-        st.dataframe(ledger_df, use_container_width=True)
+        st.dataframe(ledger_df, use_container_width=True, height=400)
 
         st.markdown("---")
 
-        # 4. Deep Analysis of Attendance & Faculty Leave Integration
+        # 5. Deep Analysis of Attendance & Faculty Leave Integration
         st.markdown("### 📈 Deep Analytical Breakdown & Faculty Leave Audit")
         
         da1, da2 = st.columns(2)
@@ -302,7 +331,7 @@ def render_faculty_reports():
         with da2:
             st.markdown("#### 📝 Faculty & Substitute Leave Audit")
             faculty_leaves = st.session_state.get("faculty_leave_requests", [])
-            matched_f_leaves = [l for l in faculty_leaves if l.get("faculty"] == report_faculty] if faculty_leaves else []
+            matched_f_leaves = [l for l in faculty_leaves if l.get("faculty") == params['faculty']] if faculty_leaves else []
             
             if matched_f_leaves:
                 for ml in matched_f_leaves:
@@ -312,18 +341,19 @@ def render_faculty_reports():
 
         st.markdown("---")
 
-        # 5. PDF Export, View & Download Studio
+        # 6. PDF & CSV Export Studio with Live Viewer
         st.markdown("### 📥 Official PDF Ledger & Spreadsheet Export Studio")
         
-        # Compile PDF bytes
-        pdf_bytes = generate_pdf_ledger_bytes(
-            subject_name=report_subject,
-            faculty_name=report_faculty,
-            semester=report_semester,
-            dept=report_dept,
-            college_name=college_name,
-            students_data=students_db
-        )
+        # Ensure PDF cache exists
+        if "cached_pdf_bytes" not in st.session_state:
+            st.session_state.cached_pdf_bytes = generate_pdf_ledger_bytes(
+                subject_name=params['subject'],
+                faculty_name=params['faculty'],
+                semester=params['semester'],
+                dept=params['dept'],
+                college_name=params['college'],
+                students_data=students_db
+            )
 
         csv_buffer = ledger_df.to_csv(index=False).encode('utf-8')
         
@@ -332,21 +362,25 @@ def render_faculty_reports():
             st.download_button(
                 label="📥 Download CSV Spreadsheet",
                 data=csv_buffer,
-                file_name=f"PragyanAI_Ledger_{report_subject.split(' - ')[0]}_{start_date}_to_{end_date}.csv",
-                mime="text/csv"
+                file_name=f"PragyanAI_Ledger_{params['subject'].split(' - ')[0]}_{params['start_date']}_to_{params['end_date']}.csv",
+                mime="text/csv",
+                key="download_csv_btn"
             )
         with dl_c2:
             st.download_button(
-                label="📥 Download Official Multi-Page PDF Ledger",
-                data=pdf_bytes,
-                file_name=f"PragyanAI_Attendance_Ledger_{report_subject.split(' - ')[0]}.pdf",
-                mime="application/pdf"
+                label="📥 Download Official PDF Ledger",
+                data=st.session_state.cached_pdf_bytes,
+                file_name=f"PragyanAI_Attendance_Ledger_{params['subject'].split(' - ')[0]}.pdf",
+                mime="application/pdf",
+                key="download_pdf_btn"
             )
         with dl_c3:
-            show_preview = st.checkbox("👁️ Preview PDF inside app viewer", value=True)
+            show_preview = st.checkbox("👁️ Preview PDF inside app viewer", value=True, key="preview_pdf_toggle")
 
         if show_preview:
             st.markdown("### 🔍 Institutional PDF Live Document Viewer")
-            base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+            base64_pdf = base64.b64encode(st.session_state.cached_pdf_bytes).decode('utf-8')
             pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="700px" type="application/pdf"></iframe>'
             st.markdown(pdf_display, unsafe_allow_html=True)
+    else:
+        st.info("👆 Configure your parameters above and click **Generate Comprehensive Attendance Ledger & Report** to initialize your studio.")
