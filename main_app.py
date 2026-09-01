@@ -22,6 +22,7 @@ from views.student_analytics import render_student_analytics
 # --- Import Faculty Views ---
 from views.faculty_dashboard import render_faculty_dashboard
 from views.faculty_profile import render_faculty_profile
+from views.faculty_marks import render_faculty_marks
 from views.faculty_chat import render_faculty_chat
 from views.faculty_leaves import render_faculty_leaves
 from views.faculty_reports import render_faculty_reports
