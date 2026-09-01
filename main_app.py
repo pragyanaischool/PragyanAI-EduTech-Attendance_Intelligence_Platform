@@ -52,13 +52,14 @@ from views.parent_analytics import render_parent_analytics
 from views.admin_demo_seeder import render_admin_demo_seeder
 
 # --- Streamlit Page Configuration ---
+st.image("assets/PragyanAI_Transperent.png")
 st.set_page_config(
     page_title="PragyanAI Attendance Intelligence Platform",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-st.image("assets/PragyanAI_Transperent.png")
+
 def render_login_portal():
     """Renders a secure institutional login gate for all user roles."""
     render_brand_logo(width=280, is_sidebar=False)
