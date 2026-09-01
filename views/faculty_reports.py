@@ -177,7 +177,7 @@ def generate_pdf_ledger_bytes(subject_name, faculty_name, semester, dept, colleg
 def render_faculty_reports():
     """
     Renders the Faculty Attendance Ledger & Executive Report Generation Hub with persistent state,
-    live PDF viewer, and CSV/PDF download capabilities.
+    robust browser object PDF display viewer, and CSV/PDF download capabilities.
     """
     # 1. Safe Brand Watermark Logo Integration
     render_brand_logo(width=220, is_sidebar=False)
@@ -242,7 +242,6 @@ def render_faculty_reports():
             "start_date": start_date,
             "end_date": end_date
         }
-        # Pre-generate and cache PDF bytes
         students_db = PragyanDatabase.get_students()
         st.session_state.cached_pdf_bytes = generate_pdf_ledger_bytes(
             subject_name=report_subject,
@@ -260,7 +259,6 @@ def render_faculty_reports():
         st.markdown("---")
         st.markdown("## 🏛️ PragyanAI Official Institutional Attendance Ledger")
         
-        # Report Header Metadata Box
         col_m1, col_m2 = st.columns(2)
         with col_m1:
             st.markdown(f"**College / Institution:** {params['college']}")
@@ -273,11 +271,9 @@ def render_faculty_reports():
 
         st.markdown("---")
 
-        # Fetch student database for ledger construction
         students_db = PragyanDatabase.get_students()
         date_list = pd.date_range(start=params['start_date'], end=params['end_date']).strftime("%Y-%m-%d").tolist()
 
-        # Build Exhaustive Student Ledger DataFrame
         ledger_rows = []
         for idx, s in enumerate(students_db[:50]):
             roll_id = s.get("roll", f"ECE_2026_{idx+1:03d}")
@@ -313,11 +309,8 @@ def render_faculty_reports():
 
         st.markdown("---")
 
-        # 5. Deep Analysis of Attendance & Faculty Leave Integration
         st.markdown("### 📈 Deep Analytical Breakdown & Faculty Leave Audit")
-        
         da1, da2 = st.columns(2)
-        
         with da1:
             st.markdown("#### 📊 Cohort Statistical Summary")
             st.markdown(
@@ -327,12 +320,10 @@ def render_faculty_reports():
                 f"- **Lowest Attendance Day:** `2026-09-04 (Thursday) — 81.5%`\n"
                 f"- **Students Flagged for Shortage (<75%):** `{len([s for s in students_db if s.get('attendance_percentage', 80) < 75])}`"
             )
-            
         with da2:
             st.markdown("#### 📝 Faculty & Substitute Leave Audit")
             faculty_leaves = st.session_state.get("faculty_leave_requests", [])
             matched_f_leaves = [l for l in faculty_leaves if l.get("faculty") == params['faculty']] if faculty_leaves else []
-            
             if matched_f_leaves:
                 for ml in matched_f_leaves:
                     st.warning(f"**Faculty Absence Logged:** {ml['type']} ({ml['from']} to {ml['to']}) — Status: `{ml['status']}`")
@@ -341,10 +332,9 @@ def render_faculty_reports():
 
         st.markdown("---")
 
-        # 6. PDF & CSV Export Studio with Live Viewer
+        # 6. PDF & CSV Export Studio with Robust Object Display Viewer
         st.markdown("### 📥 Official PDF Ledger & Spreadsheet Export Studio")
         
-        # Ensure PDF cache exists
         if "cached_pdf_bytes" not in st.session_state:
             st.session_state.cached_pdf_bytes = generate_pdf_ledger_bytes(
                 subject_name=params['subject'],
@@ -381,7 +371,17 @@ def render_faculty_reports():
             st.markdown("### 🔍 Institutional PDF Live Document Viewer")
             base64_pdf = base64.b64encode(st.session_state.cached_pdf_bytes).decode('utf-8')
             
-            pdf_display = f'<div style="border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;"><iframe src="data:application/pdf;base64,{base64_pdf}#toolbar=1&view=FitH" width="100%" height="750px" style="border: none;"></iframe></div>'
+            # Use a robust browser <object> tag which natively handles multi-page embedded PDFs seamlessly
+            pdf_display = f'''
+                <div style="border: 2px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #f8fafc; padding: 4px;">
+                    <object data="data:application/pdf;base64,{base64_pdf}" type="application/pdf" width="100%" height="750px">
+                        <p style="text-align: center; padding: 20px;">
+                            Your browser does not support embedded PDFs. 
+                            Please use the <b>Download Official PDF Ledger</b> button above to view it.
+                        </p>
+                    </object>
+                </div>
+            '''
             st.markdown(pdf_display, unsafe_allow_html=True)
     else:
         st.info("👆 Configure your parameters above and click **Generate Comprehensive Attendance Ledger & Report** to initialize your studio.")
