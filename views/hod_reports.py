@@ -172,7 +172,6 @@ def render_hod_reports():
         ]
         selected_subject = st.selectbox("Select Subject for Ledger Generation", all_subjects, key="rep_subj_sel")
 
-        # Compile ledger for selected subject from students database
         ledger_rows = []
         for s in students_db:
             subj_data = s.get("subjects", {}).get(selected_subject, {"held": 38, "attended": 30, "pct": 78.9, "status": "🟢 Safe"})
