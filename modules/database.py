@@ -366,11 +366,21 @@ class PragyanDatabase:
         PragyanDatabase.initialize_database()
         st.session_state.students_db.insert(0, student_data)
 
-    # --- Faculty Allocation Accessors ---
+    # --- Faculty Allocation Accessors (Fixed with faculty_name filter support) ---
     @staticmethod
-    def get_faculty_allocations():
+    def get_faculty_allocations(faculty_name=None):
+        """Retrieves faculty course allocations from database, optionally filtered by faculty name."""
         PragyanDatabase.initialize_database()
-        return st.session_state.faculty_allocations_db
+        if "faculty_allocations_db" not in st.session_state:
+            st.session_state.faculty_allocations_db = [
+                {"faculty": "Dr. Smitha Rao", "subject": "ECE301 - Digital Logic Design", "semester": "Semester 3", "enrolled": 48},
+                {"faculty": "Dr. Smitha Rao", "subject": "ECE501 - VLSI Architecture", "semester": "Semester 5", "enrolled": 52},
+                {"faculty": "Dr. Anand Kumar", "subject": "ECE303 - Signals & Systems", "semester": "Semester 3", "enrolled": 48}
+            ]
+        allocations = st.session_state.faculty_allocations_db
+        if faculty_name:
+            return [a for a in allocations if a.get("faculty") == faculty_name]
+        return allocations
 
     @staticmethod
     def add_faculty_allocation(allocation_data):
