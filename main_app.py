@@ -156,8 +156,8 @@ def main():
                 "Dashboard",
                 "Princial Profile",
                 "College Profile",
-                "College Calender",
                 "College Faculty Page",
+                "College Calender",
                 "Leaves",
                 "College Analytics",
                 "College AI ChatBot",
@@ -205,8 +205,8 @@ def main():
         if page == "Dashboard": render_principal_dashboard()
         elif page == "Princial Profile": render_principal_profile()
         elif page == "College Profile": render_principal_college_profile()
-        elif page == "College Calender": render_college_calendar()
         elif page == "College Faculty Page": render_college_faculty()
+        elif page == "College Calender": render_college_calendar()
         elif page == "Leaves": render_principal_leaves()
         elif page == "College Analytics": render_college_analytics()
         elif page == "College AI ChatBot": render_college_chatbot()
