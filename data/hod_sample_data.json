@@ -1,0 +1,43 @@
+{
+  "institutional_metadata": {
+    "institution": "PragyanAI University & Research Studio",
+    "academic_term": "Fall Semester 2026",
+    "last_updated": "2026-09-01"
+  },
+  "hod_records": [
+    {
+      "employee_id": "HOD_ECE_2026_01",
+      "hod_name": "Dr. HOD (ECE)",
+      "title": "Head of Department — ECE",
+      "department": "Electronics & Communication Engineering (ECE)",
+      "email": "hod.ece@pragyan.edu",
+      "contact_phone": "+91 98765 90101",
+      "deanery_office": "Block A, Room 102 (Administrative Wing)",
+      "council_hours": "Tue & Thu: 10:00 AM - 1:00 PM",
+      "availability_status": "🟢 Available in Deanery",
+      "department_summary": {
+        "total_students": 420,
+        "total_faculty": 18,
+        "department_average_turnout": "87.4%",
+        "at_risk_shortage_count": 37
+      }
+    },
+    {
+      "employee_id": "HOD_CSE_2026_02",
+      "hod_name": "Dr. HOD (CSE)",
+      "title": "Head of Department — CSE",
+      "department": "Computer Science & Engineering (CSE)",
+      "email": "hod.cse@pragyan.edu",
+      "contact_phone": "+91 98765 90202",
+      "deanery_office": "Block A, Room 105 (Administrative Wing)",
+      "council_hours": "Mon & Wed: 2:00 PM - 4:00 PM",
+      "availability_status": "🟢 Available on Campus",
+      "department_summary": {
+        "total_students": 650,
+        "total_faculty": 24,
+        "department_average_turnout": "91.2%",
+        "at_risk_shortage_count": 22
+      }
+    }
+  ]
+}
