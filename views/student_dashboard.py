@@ -3,18 +3,17 @@ from utils.helpers import render_brand_logo
 
 def render_student_dashboard():
     """
-    Renders the dedicated Student Attendance Dashboard with safe brand logo rendering,
-    macro metric summary cards, course attendance ledgers, and live institutional notice boards.
+    Renders the student attendance dashboard including live course ledgers, 
+    institutional notice boards, and the Faculty & HOD Availability Status Tracker.
     """
-    # 1. Safe Brand Watermark Logo Integration
     render_brand_logo(width=220, is_sidebar=False)
     
     user_name = st.session_state.get("user_name", "Sateesh Ambesange")
     
     st.markdown(f"# 🎒 Student Attendance Intelligence Hub — {user_name}")
-    st.markdown("### *Real-Time Attendance Passport, Course Ledger, and Institutional Notices.*")
+    st.markdown("### *Real-Time Attendance Passport, Course Ledger, and Faculty Availability Tracker.*")
 
-    # 2. Top Metric Summary Cards
+    # 1. Top Metric Summary Cards
     c1, c2, c3, c4 = st.columns(4)
     c1.markdown(f'<div class="metric-card"><h3>{user_name}</h3><p>Student Name & ID</p></div>', unsafe_allow_html=True)
     c2.markdown('<div class="metric-card"><h3>84.7%</h3><p>Current Attendance</p></div>', unsafe_allow_html=True)
@@ -23,7 +22,7 @@ def render_student_dashboard():
 
     st.markdown("---")
 
-    # 3. Course-Wise Attendance Ledger Table
+    # 2. Course-Wise Attendance Ledger Table
     st.markdown("### 📊 Course-Wise Attendance Passport Ledger")
     st.dataframe({
         "Course Code & Name": ["ECE301 - Digital Logic Design", "ECE302 - VLSI Architecture", "ECE303 - Signals & Systems", "ECE304 - Microcontrollers"],
@@ -35,14 +34,25 @@ def render_student_dashboard():
 
     st.markdown("---")
 
+    # 3. Faculty & HOD Availability & Leave Status Board (NEW)
+    st.markdown("### 🟢 Faculty & HOD Availability & Leave Status Tracker")
+    st.markdown("Check real-time campus availability, office hours, and approved leave statuses for your department instructors.")
+
+    faculty_availability_data = {
+        "Name & Title": ["Dr. HOD (ECE)", "Dr. Smitha Rao", "Prof. Anand Kumar", "Dr. Rajeshwari", "Prof. Suresh Hegde"],
+        "Role & Department": ["HOD - ECE", "Professor (VLSI)", "Associate Prof (Digital)", "Assistant Prof (Signals)", "Professor (Microprocessors)"],
+        "Status": ["🟢 Available on Campus", "🟢 Available in Cabin", "🔴 On Approved Leave (Sep 1 - Sep 3)", "🟢 Available in Lab", "🟢 Available in Cabin"],
+        "Cabin / Location": ["Block A, Room 102", "Block B, Room 304", "On Leave", "Block B, Room 210", "Block C, Room 115"],
+        "Consultation Hours": ["Tue/Thu: 10AM - 1PM", "Mon-Fri: 3PM - 5PM", "N/A (Leave)", "Mon/Wed: 2PM - 4PM", "Tue/Fri: 1PM - 3PM"]
+    }
+    st.dataframe(faculty_availability_data, use_container_width=True)
+
+    st.markdown("---")
+
     # 4. Student Notice Board Live Viewer
     st.markdown("### 📢 Institutional Notice Board & Live Announcements")
-    st.markdown("Stay updated with official exam notices, departmental circulars, and attendance mandates.")
-
-    # Access shared notices from session state with default fallback
     notices = st.session_state.get("institutional_notices", [
-        {"id": 1, "title": "Mid-Semester Examination Attendance Mandate", "date": "2026-09-01", "author": "Dr. Principal", "priority": "🔴 High", "content": "All students must maintain a strict 75% attendance record to qualify for upcoming mid-semester examinations. No exemptions without valid medical certificates."},
-        {"id": 2, "title": "IEEE Technical Paper Presentation", "date": "2026-08-28", "author": "Dr. HOD (ECE)", "priority": "🟡 Medium", "content": "ECE department students are invited to register for the upcoming national robotics and AI symposium in Block C."}
+        {"id": 1, "title": "Mid-Semester Examination Attendance Mandate", "date": "2026-09-01", "author": "Dr. Principal", "priority": "🔴 High", "content": "All students must maintain a strict 75% attendance record to qualify for upcoming mid-semester examinations."},
     ])
 
     for notice in notices:
