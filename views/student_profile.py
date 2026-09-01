@@ -21,9 +21,21 @@ def render_student_profile():
     # 2. Automated Demo Seeder: Ensure 1,000 student profiles exist in DB for demo purposes
     current_students = PragyanDatabase.get_students()
     if len(current_students) < 100:
-        departments = ["Electronics & Communication (ECE)", "Computer Science & Engineering (CSE)", "Artificial Intelligence & Data Science (AIDS)", "Mechanical Engineering (ME)"]
-        first_names = ["Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Sai", "Reyansh", "Ayaan", "Krishna", "Ishaan", "Sateesh", "Ananya", "Diya", "Saanvi", "Aadhya", "Priya", "Kavya", "Neha", "Rohan", "Rahul"]
-        last_names = ["Ambesange", "Sharma", "Verma", "Patel", "Reddy", "Nair", "Iyer", "Rao", "Gupta", "Mehta", "Kumar", "Singh", "Joshi", "Deshmukh", "Kulkarni"]
+        departments = [
+            "Electronics & Communication (ECE)", 
+            "Computer Science & Engineering (CSE)", 
+            "Artificial Intelligence & Data Science (AIDS)", 
+            "Mechanical Engineering (ME)"
+        ]
+        first_names = [
+            "Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Sai", "Reyansh", 
+            "Ayaan", "Krishna", "Ishaan", "Sateesh", "Ananya", "Diya", "Saanvi", 
+            "Aadhya", "Priya", "Kavya", "Neha", "Rohan", "Rahul"
+        ]
+        last_names = [
+            "Ambesange", "Sharma", "Verma", "Patel", "Reddy", "Nair", "Iyer", 
+            "Rao", "Gupta", "Mehta", "Kumar", "Singh", "Joshi", "Deshmukh", "Kulkarni"
+        ]
         
         seeded_count = 0
         for i in range(1, 1001):
@@ -44,7 +56,7 @@ def render_student_profile():
                     "semester": random.choice(["Sem 3", "Sem 5", "Sem 7"]),
                     "email": f"{f_name.lower()}.{l_name.lower()}{i}@pragyan.edu",
                     "phone": f"+91 {random.randint(900,999)} {random.randint(100,999)} {random.randint(1000,9999)}",
-                    "address": f"Hostel Block {random.choice(['A','B','C','D']}, Room {random.randint(101,500)}, Pragyan Campus",
+                    "address": f"Hostel Block {random.choice(['A','B','C','D'])}, Room {random.randint(101,500)}, Pragyan Campus",
                     "parent_name": f"Mr. {l_name}",
                     "parent_phone": f"+91 {random.randint(900,999)} {random.randint(100,999)} {random.randint(1000,9999)}",
                     "parent_email": f"guardian.{l_name.lower()}@gmail.com",
