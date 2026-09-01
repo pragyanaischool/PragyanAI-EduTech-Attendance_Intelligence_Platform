@@ -70,9 +70,10 @@ def render_hod_profile():
                 "deanery_office": office_input,
                 "availability_status": status_input
             }
-            # Append to session state HOD table
+            if "db_hod_records" not in st.session_state:
+                st.session_state.db_hod_records = []
             st.session_state.db_hod_records.insert(0, new_hod_record)
-            st.success(f"Administrative profile and database records for **{hod_name_input}** updated successfully!")
+            st.success(f"🎉 Administrative profile and database records for **{hod_name_input}** updated successfully!")
 
     st.markdown("---")
 
