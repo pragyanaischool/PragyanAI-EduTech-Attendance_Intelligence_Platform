@@ -129,15 +129,3 @@ def render_faculty_profile():
                 st.success(f"🎉 CV **{cv_upload.name}** successfully uploaded and parsed into institutional records!")
                 
             st.success(f"🎉 Professional profile records and credentials for **{edit_name}** ({edit_designation}, {edit_college}) updated successfully in the faculty database!")
-
-    st.markdown("---")
-
-    # 4. Live Faculty Allocations & Directory Summary
-    st.markdown("### 🗄️ Institutional Faculty Directory & Allocation Ledger")
-    st.markdown("Overview of active faculty portfolios stored in the database.")
-    
-    faculty_allocations = PragyanDatabase.get_faculty_allocations()
-    if faculty_allocations:
-        st.dataframe(faculty_allocations, use_container_width=True)
-    else:
-        st.info("No faculty allocation records found in database.")
