@@ -1,0 +1,92 @@
+{
+  "institutional_metadata": {
+    "institution": "PragyanAI University & Research Studio",
+    "department": "Electronics & Communication Engineering (ECE)",
+    "academic_term": "Fall Semester 2026",
+    "last_updated": "2026-09-01"
+  },
+  "faculty_members": [
+    {
+      "employee_id": "FAC_ECE_101",
+      "faculty_name": "Dr. Smitha Rao",
+      "title": "Associate Professor & VLSI Chair",
+      "department": "Electronics & Communication (ECE)",
+      "email": "smitha.rao@pragyan.edu",
+      "contact_phone": "+91 98765 10101",
+      "cabin_location": "Block B, Room 304 (Academic Wing)",
+      "consultation_hours": "Mon-Fri: 3:00 PM - 5:00 PM",
+      "availability_status": "🟢 Available in Cabin",
+      "allocated_subjects": [
+        {
+          "subject_code": "ECE301",
+          "subject_name": "Digital Logic Design",
+          "semester": "Sem 5",
+          "department": "Electronics & Communication (ECE)"
+        },
+        {
+          "subject_code": "ECE402",
+          "subject_name": "VLSI Architecture",
+          "semester": "Sem 7",
+          "department": "Electronics & Communication (ECE)"
+        }
+      ]
+    },
+    {
+      "employee_id": "FAC_ECE_102",
+      "faculty_name": "Prof. Anand Kumar",
+      "title": "Assistant Professor",
+      "department": "Electronics & Communication (ECE)",
+      "email": "anand.kumar@pragyan.edu",
+      "contact_phone": "+91 98765 10202",
+      "cabin_location": "Block B, Room 210 (Academic Wing)",
+      "consultation_hours": "Tue-Thu: 2:00 PM - 4:00 PM",
+      "availability_status": "🔴 On Approved Leave (Sep 1 - Sep 3)",
+      "allocated_subjects": [
+        {
+          "subject_code": "ECE302",
+          "subject_name": "Signals & Systems",
+          "semester": "Sem 5",
+          "department": "Electronics & Communication (ECE)"
+        }
+      ]
+    },
+    {
+      "employee_id": "FAC_ECE_103",
+      "faculty_name": "Dr. Rajeshwari",
+      "title": "Professor & Embedded Systems Head",
+      "department": "Electronics & Communication (ECE)",
+      "email": "rajeshwari@pragyan.edu",
+      "contact_phone": "+91 98765 10303",
+      "cabin_location": "Block C, Room 115 (Research Lab)",
+      "consultation_hours": "Mon-Wed: 11:00 AM - 1:00 PM",
+      "availability_status": "🟢 Available in Lab",
+      "allocated_subjects": [
+        {
+          "subject_code": "ECE305",
+          "subject_name": "Microcontrollers",
+          "semester": "Sem 5",
+          "department": "Electronics & Communication (ECE)"
+        }
+      ]
+    },
+    {
+      "employee_id": "FAC_ECE_104",
+      "faculty_name": "Prof. Suresh Hegde",
+      "title": "Senior Lecturer",
+      "department": "Electronics & Communication (ECE)",
+      "email": "suresh.hegde@pragyan.edu",
+      "contact_phone": "+91 98765 10404",
+      "cabin_location": "Block B, Room 118",
+      "consultation_hours": "Thu-Fri: 10:00 AM - 12:00 PM",
+      "availability_status": "🟢 Available on Campus",
+      "allocated_subjects": [
+        {
+          "subject_code": "ECE304",
+          "subject_name": "Control Systems",
+          "semester": "Sem 5",
+          "department": "Electronics & Communication (ECE)"
+        }
+      ]
+    }
+  ]
+}
