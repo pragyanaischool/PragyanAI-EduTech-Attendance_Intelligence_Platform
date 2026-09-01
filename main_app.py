@@ -142,19 +142,19 @@ def main():
     
     # Role-Specific Navigation Routing
     if role == "Student":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "AI Advisor", "Reports"])
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Student Profile", "Leaves", "Analytics", "AI Advisor", "Reports"])
     elif role == "Faculty":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Faculty Profile", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
     elif role == "Parent":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Guardian AI Chat", "Analytics", "Profile"])
     elif role == "HOD":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Dept Profile", "Leaves", "Analytics", "HOD AI Chat", "Report"])
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Hod Profile", "Dept Profile", "Leaves", "Analytics", "HOD AI Chat", "Report"])
     elif role == "Principal":
         page = st.sidebar.radio(
             "Navigation", 
             [
                 "Dashboard",
-                "Profile",
+                "Princial Profile",
                 "College Profile",
                 "College Calender",
                 "College Faculty Page",
