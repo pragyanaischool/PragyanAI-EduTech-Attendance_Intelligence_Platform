@@ -5,8 +5,8 @@ class PragyanDatabase:
     """
     Core Database & Session State Management for PragyanAI Institutional Platform.
     Handles persistent storage for students with comprehensive multi-subject attendance tracking, 
-    faculty portfolios, department rosters, semester course allocations, leave records, adhoc duties,
-    and principal executive profiles.
+    faculty portfolios with degrees/designations/experience metrics, department rosters, 
+    semester course allocations, leave records, adhoc duties, and principal executive profiles.
     """
 
     @staticmethod
@@ -183,14 +183,86 @@ class PragyanDatabase:
                 }
             ]
 
-        # 4. Department Faculty Roster (Joined Date, Role, Active Courses)
+        # 4. Department Faculty Roster (Enhanced with Degree, Designation, Joining Date, Experience in College, and Total Experience)
         if "department_faculty_db" not in st.session_state:
             st.session_state.department_faculty_db = [
-                {"faculty_name": "Dr. Smitha Rao", "role": "Professor & Senior Researcher", "joined_date": "2018-06-15", "active_courses": "ECE301, ECE302", "status": "🟢 Active"},
-                {"faculty_name": "Dr. Anand Kumar", "role": "Associate Professor", "joined_date": "2020-07-01", "active_courses": "ECE303, ECE401", "status": "🟢 Active"},
-                {"faculty_name": "Prof. Meena Hegde", "role": "Assistant Professor", "joined_date": "2021-08-10", "active_courses": "ECE304, ECE305", "status": "🟢 Active"},
-                {"faculty_name": "Dr. Rajesh Sharma", "role": "Senior Lecturer", "joined_date": "2022-01-15", "active_courses": "ECE201, ECE202", "status": "🟢 Active"},
-                {"faculty_name": "Prof. Sneha Patil", "role": "Assistant Professor", "joined_date": "2023-07-20", "active_courses": "ECE203, ECE306", "status": "🟡 On Sabbatical"}
+                {
+                    "department": "Electronics & Communication (ECE)",
+                    "faculty_name": "Dr. Smitha Rao",
+                    "degree": "Ph.D. in VLSI Design (IISc Bangalore)",
+                    "designation": "Professor & Senior Researcher",
+                    "joined_date": "2018-06-15",
+                    "college_experience_years": 8,
+                    "total_experience_years": 16,
+                    "active_courses": "ECE301, ECE501",
+                    "status": "🟢 Active"
+                },
+                {
+                    "department": "Electronics & Communication (ECE)",
+                    "faculty_name": "Dr. Anand Kumar",
+                    "degree": "Ph.D. in Signal Processing (IIT Madras)",
+                    "designation": "Associate Professor",
+                    "joined_date": "2020-07-01",
+                    "college_experience_years": 6,
+                    "total_experience_years": 12,
+                    "active_courses": "ECE302, ECE303",
+                    "status": "🟢 Active"
+                },
+                {
+                    "department": "Electronics & Communication (ECE)",
+                    "faculty_name": "Prof. Meena Hegde",
+                    "degree": "M.Tech in Embedded Systems (NITK Surathkal)",
+                    "designation": "Assistant Professor",
+                    "joined_date": "2021-08-10",
+                    "college_experience_years": 5,
+                    "total_experience_years": 9,
+                    "active_courses": "ECE502, ECE504",
+                    "status": "🟢 Active"
+                },
+                {
+                    "department": "Artificial Intelligence & Data Science",
+                    "faculty_name": "Dr. Kavitha Murthy",
+                    "degree": "Ph.D. in Machine Learning (IIT Bombay)",
+                    "designation": "Professor & HOD (AI & DS)",
+                    "joined_date": "2019-05-10",
+                    "college_experience_years": 7,
+                    "total_experience_years": 15,
+                    "active_courses": "AI501, AI502",
+                    "status": "🟢 Active"
+                },
+                {
+                    "department": "Artificial Intelligence & Data Science",
+                    "faculty_name": "Prof. Raghavendra Swamy",
+                    "degree": "M.Tech in Data Engineering (BITS Pilani)",
+                    "designation": "Assistant Professor",
+                    "joined_date": "2022-01-15",
+                    "college_experience_years": 4,
+                    "total_experience_years": 8,
+                    "active_courses": "AI301, AI402",
+                    "status": "🟢 Active"
+                },
+                {
+                    "department": "Computer Science & Engineering",
+                    "faculty_name": "Dr. Rajesh Hegde",
+                    "degree": "Ph.D. in Distributed Systems (Stanford University)",
+                    "designation": "Professor & HOD (CSE)",
+                    "joined_date": "2017-08-01",
+                    "college_experience_years": 9,
+                    "total_experience_years": 18,
+                    "active_courses": "CSE401, CSE502",
+                    "status": "🟢 Active"
+                },
+                {
+                    "department": "Electrical & Electronics Engineering",
+                    "faculty_name": "Prof. Anand Rao",
+                    "degree": "M.Tech in Power Electronics (IIT Roorkee)",
+                    "designation": "Associate Professor & HOD (EEE)",
+                    "joined_date": "2020-09-01",
+                    "college_experience_years": 6,
+                    "total_experience_years": 14,
+                    "active_courses": "EEE301, EEE402",
+                    "status": "🟢 Active"
+                }
             ]
 
         # 5. Semester Course Allocations
