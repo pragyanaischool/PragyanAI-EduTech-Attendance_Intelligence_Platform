@@ -118,7 +118,7 @@ def render_faculty_dashboard():
         "Department": [s.get("department", "ECE") for s in students_db],
         "Attendance %": [f"{s.get('attendance_percentage', 85.0)}%" for s in students_db],
         "Status": [s.get("exam_eligibility_status", "🟢 Safe") for s in students_db],
-        "Action": ["Good", "Good", "⚠️ Send Warning Notice" if s.get("attendance_percentage", 85) < 75 else "Optimal"] for s in students_db
+        "Action": ["Good" if s.get("attendance_percentage", 85) >= 75 else "⚠️ Send Warning Notice" for s in students_db]
     }, use_container_width=True)
 
     st.markdown("---")
