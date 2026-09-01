@@ -1,82 +1,100 @@
 import streamlit as st
+import datetime
 from utils.helpers import render_brand_logo
 
 def render_faculty_dashboard():
     """
-    Renders the faculty attendance dashboard with safe brand watermark logo,
-    QR code generator controls, class attendance rosters, and notice board management.
+    Renders the faculty attendance dashboard featuring multi-subject allocation, 
+    daily dynamic QR code generation with database persistence, and historical QR code audits.
     """
-    # 1. Safe Brand Watermark Logo Integration
     render_brand_logo(width=220, is_sidebar=False)
     
     user_name = st.session_state.get("user_name", "Dr. Faculty (ECE)")
     
     st.markdown(f"# 👨‍🏫 Faculty Portal & QR Intelligence Hub — {user_name}")
-    st.markdown("### *Generate Dynamic QR Codes. Monitor Live Class Roster. Track At-Risk Students.*")
+    st.markdown("### *Multi-Subject Attendance Management & Daily QR Code Session Generator.*")
 
-    # 2. Top Metric Summary Cards
+    # 1. Top Metric Summary Cards
     c1, c2, c3, c4 = st.columns(4)
-    c1.markdown('<div class="metric-card"><h3>5 Active</h3><p>Assigned Courses</p></div>', unsafe_allow_html=True)
+    c1.markdown('<div class="metric-card"><h3>4 Subjects</h3><p>Allocated Portfolio</p></div>', unsafe_allow_html=True)
     c2.markdown('<div class="metric-card"><h3>240</h3><p>Total Enrolled Students</p></div>', unsafe_allow_html=True)
     c3.markdown('<div class="metric-card"><h3>89.2%</h3><p>Average Class Turnout</p></div>', unsafe_allow_html=True)
-    c4.markdown('<div class="metric-card"><h3>14 At-Risk</h3><p>Shortage Warning List</p></div>', unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    # 3. Dynamic QR Code Generator Section
-    st.markdown("### 📱 Dynamic QR Code Attendance Session Generator")
-    col_qr1, col_qr2 = st.columns(2)
     
-    with col_qr1:
-        selected_course = st.selectbox("Select Course for Session", ["Digital Logic Design (ECE301)", "VLSI Architecture (ECE402)", "Microcontrollers (ECE305)"])
-        validity_mins = st.slider("QR Code Expiry Duration (Minutes)", min_value=1, max_value=15, value=5)
-        geo_fence = st.checkbox("Enable Geo-Fencing Verification (Campus Wi-Fi / GPS)", value=True)
+    # Calculate stored QR count dynamically from session state database
+    db_qrs = st.session_state.get("qr_session_database", [])
+    c4.markdown(f'<div class="metric-card"><h3>{len(db_qrs)} QRs</h3><p>Generated & Stored in DB</p></div>', unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    # 2. Dynamic QR Code Session Generator for Allocated Subjects
+    st.markdown("### 📱 Daily Subject QR Code Session Generator")
+    
+    # Initialize QR Session DB in session state if missing
+    if "qr_session_database" not in st.session_state:
+        st.session_state.qr_session_database = [
+            {"date": "2026-09-01", "dept": "ECE", "semester": "Sem 5", "subject": "ECE301 - Digital Logic Design", "file_link": "qr_sessions/ece301_2026_09_01.png", "scans": 44},
+            {"date": "2026-09-01", "dept": "ECE", "semester": "Sem 7", "subject": "ECE402 - VLSI Architecture", "file_link": "qr_sessions/ece402_2026_09_01.png", "scans": 46},
+        ]
+
+    with st.form("faculty_qr_generator_form"):
+        col_q1, col_q2 = st.columns(2)
         
-        if st.button("🚀 Generate Live QR Session"):
-            st.success(f"Dynamic QR Session generated successfully for **{selected_course}**! Valid for {validity_mins} minutes.")
+        with col_q1:
+            # Faculty allocated subjects mapping to specific departments and semesters
+            allocated_subjects = [
+                {"subject": "ECE301 - Digital Logic Design", "dept": "Electronics & Communication (ECE)", "sem": "Sem 5"},
+                {"subject": "ECE402 - VLSI Architecture", "dept": "Electronics & Communication (ECE)", "sem": "Sem 7"},
+                {"subject": "ECE305 - Microcontrollers", "dept": "Electronics & Communication (ECE)", "sem": "Sem 5"},
+                {"subject": "CSE202 - Data Structures & Algorithms", "dept": "Computer Science (CSE)", "sem": "Sem 3"},
+            ]
             
-    with col_qr2:
-        st.markdown("#### 🔍 Active Session Live Feed")
-        st.info(
-            "**Status:** QR Session Active.\n\n"
-            "• **Scans Recorded:** 42 / 48 Students\n"
-            "• **Geo-Fence Compliance:** 100%\n"
-            "• **Anti-Proxy Shield:** Active (Device Fingerprinting Enforced)"
-        )
+            subject_labels = [item["subject"] for item in allocated_subjects]
+            selected_sub_label = st.selectbox("Select Allocated Subject", subject_labels)
+            
+            # Automatically fetch matching Department and Semester based on selection
+            matched_item = next(item for item in allocated_subjects if item["subject"] == selected_sub_label)
+            assigned_dept = matched_item["dept"]
+            assigned_sem = matched_item["sem"]
+            
+            st.text_input("Auto-Linked Department", value=assigned_dept, disabled=True)
+            st.text_input("Auto-Linked Semester", value=assigned_sem, disabled=True)
+
+        with col_q2:
+            session_date = st.date_input("Session Date", value=datetime.date.today())
+            validity_mins = st.slider("QR Code Expiry Duration (Minutes)", min_value=1, max_value=30, value=10)
+            geo_fence = st.checkbox("Enable Geo-Fencing (Campus Wi-Fi / GPS Lock)", value=True)
+            anti_proxy = st.checkbox("Enable Anti-Proxy Device Fingerprinting", value=True)
+
+        if st.form_submit_button("🚀 Generate & Store QR Session in Database"):
+            date_str = session_date.strftime("%Y-%m-%d")
+            sub_code_clean = selected_sub_label.split(" - ")[0].lower()
+            file_path = f"qr_sessions/{sub_code_clean}_{date_str}.png"
+            
+            new_qr_record = {
+                "date": date_str,
+                "dept": assigned_dept,
+                "semester": assigned_sem,
+                "subject": selected_sub_label,
+                "file_link": file_path,
+                "scans": 0
+            }
+            
+            st.session_state.qr_session_database.insert(0, new_qr_record)
+            st.success(f"🎉 QR Code session successfully generated and stored in database for **{selected_sub_label}** ({assigned_sem} - {assigned_dept}) on {date_str}!")
 
     st.markdown("---")
 
-    # 4. Enrolled Students & Shortage Roster Table
-    st.markdown("### 📋 Class Attendance Roster & Shortage Audit")
-    st.dataframe({
-        "Roll No": ["ECE2026_01", "ECE2026_02", "ECE2026_03", "ECE2026_04", "ECE2026_05"],
-        "Student Name": ["Aarav Sharma", "Priya Patel", "Rohan Verma", "Sneha Rao", "Kiran Kumar"],
-        "Total Classes": [25, 25, 25, 25, 25],
-        "Attended": [23, 21, 17, 24, 18],
-        "Percentage": ["92.0%", "84.0%", "68.0% (Shortage)", "96.0%", "72.0% (Warning)"],
-        "Action": ["Good", "Good", "⚠️ Send Warning Notice", "Excellent", "🟡 Monitor"]
-    }, use_container_width=True)
-
-    st.markdown("---")
-
-    # 5. Notice Board Publisher (Faculty Edition)
-    st.markdown("### 📢 Faculty Notice Board Publisher")
-    with st.form("faculty_notice_form"):
-        notice_title = st.text_input("Notice Title", placeholder="e.g., Assignment Submission Deadline or Extra Class Schedule")
-        notice_content = st.text_area("Notice Description", placeholder="Type announcement details for students...")
-        if st.form_submit_button("📢 Publish Notice to Student Portals"):
-            if notice_title.strip() and notice_content.strip():
-                if "institutional_notices" not in st.session_state:
-                    st.session_state.institutional_notices = []
-                new_notice = {
-                    "id": len(st.session_state.get("institutional_notices", [])) + 1,
-                    "title": notice_title,
-                    "date": "2026-09-01",
-                    "author": f"{user_name} (Faculty)",
-                    "priority": "🟡 Medium",
-                    "content": notice_content
-                }
-                st.session_state.institutional_notices.insert(0, new_notice)
-                st.success("Notice published successfully!")
-            else:
-                st.error("Please fill in both fields.")
+    # 3. Database Audit & Stored QR Ledger Table
+    st.markdown("### 🗄️ Stored QR Code Database Ledger")
+    st.markdown(f"Total active QR codes logged in database: **{len(st.session_state.qr_session_database)}**")
+    
+    # Format table data from session state database
+    table_data = {
+        "Date": [item["date"] for item in st.session_state.qr_session_database],
+        "Department": [item["dept"] for item in st.session_state.qr_session_database],
+        "Semester": [item["semester"] for item in st.session_state.qr_session_database],
+        "Subject": [item["subject"] for item in st.session_state.qr_session_database],
+        "Database File Link": [f"🔗 `{item['file_link']}`" for item in st.session_state.qr_session_database],
+        "Scans Recorded": [item["scans"] for item in st.session_state.qr_session_database]
+    }
+    st.dataframe(table_data, use_container_width=True)
