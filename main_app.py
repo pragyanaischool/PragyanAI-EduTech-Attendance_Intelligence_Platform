@@ -146,7 +146,7 @@ def main():
     if role == "Student":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Student Profile", "Leaves", "Analytics", "AI Advisor", "Reports"])
     elif role == "Faculty":
-        page = st.sidebar.radio("Navigation", ["Dashboard", "Faculty Profile", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
+        page = st.sidebar.radio("Navigation", ["Dashboard", "Faculty Profile", "Students Marks", "Leaves", "Analytics", "Faculty AI Chat", "Report"])
     elif role == "Parent":
         page = st.sidebar.radio("Navigation", ["Dashboard", "Profile", "Analytics", "AI Chat Bot"])
     elif role == "HOD":
@@ -187,6 +187,7 @@ def main():
     elif role == "Faculty":
         if page == "Dashboard": render_faculty_dashboard()
         elif page == "Faculty Profile": render_faculty_profile()
+        elif page == "Students Marks": render_faculty_marks()
         elif page == "Leaves": render_faculty_leaves()
         elif page == "Analytics": render_faculty_analytics()
         elif page == "Faculty AI Chat": render_faculty_chat()
